@@ -1,0 +1,6 @@
+flask
+pandas
+openpyxl
+reportlab
+plotly
+google-generativeai

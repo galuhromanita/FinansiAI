@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinansiAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if
+  messages %}
+  <div
+    id="errorModal"
+    class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn"
+  >
+    <div
+      class="bg-[#FFF7DD] rounded-2xl p-8 w-[90%] sm:w-[400px] text-center shadow-2xl transform scale-95 animate-popUp space-y-5"
+    >
+      <h2
+        class="text-2xl font-extrabold text-[#2C3E50] flex items-center justify-center gap-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-7 h-7 text-red-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12A9 9 0 1112 3a9 9 0 019 9z"
+          />
+        </svg>
+        <span>Terjadi Kesalahan</span>
+      </h2>
+
+      {% for category, message in messages %} {% if category == 'error' %}
+      <p class="text-[#2C3E50]/80 text-lg font-medium leading-relaxed">
+        {{ message }}
+      </p>
+      {% endif %} {% endfor %}
+
+      <div class="pt-2">
+        <button
+          onclick="document.getElementById('errorModal').remove()"
+          class="bg-[#B4DEBD] hover:bg-[#91C4C3] text-[#2C3E50] font-semibold px-6 py-2 rounded-full shadow-md transition duration-300"
+        >
+          Coba Lagi
+        </button>
+      </div>
+    </div>
+  </div>
+  {% endif %} {% endwith %}
+
+  <style>
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes popUp {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 0.3s ease-out;
+    }
+    .animate-popUp {
+      animation: popUp 0.25s ease-out;
+    }
+  </style>
+
+  <body
+    class="min-h-screen flex items-center bg-[#80A1BA] relative text-[#FFF7DD] overflow-hidden"
+  >
+    <!-- Background -->
+    <div class="absolute inset-0 -z-10">
+      <img
+        src="{{ url_for('static', filename='image/bc2.jpg') }}"
+        alt="Background"
+        class="w-full h-full object-cover opacity-40 mix-blend-multiply"
+      />
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-[#91C4C3]/40 to-[#80A1BA]/80"
+      ></div>
+    </div>
+
+    <!-- Konten Utama -->
+    <div
+      id="mainContent"
+      class="relative z-10 text-left space-y-6 px-8 sm:px-16 w-full max-w-3xl mx-auto"
+    >
+      <!-- Judul -->
+      <h1
+        class="text-6xl sm:text-7xl font-extrabold text-[#FFF7DD]"
+        style="text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8)"
+      >
+        <span class="text-[#B4DEBD]">Finansi</span
+        ><span class="text-[#FFF7DD]">AI</span>
+      </h1>
+
+      <!-- Deskripsi -->
+      <p
+        class="text-xl sm:text-2xl text-[#FFF7DD]/90 leading-relaxed max-w-2xl"
+      >
+        Unggah file transaksi bulanan Anda dan sistem akan membuat laporan
+        keuangan secara otomatis.
+      </p>
+
+      <!-- Form Upload -->
+      <form
+        id="uploadForm"
+        action="/upload"
+        method="post"
+        enctype="multipart/form-data"
+        class="space-y-5"
+      >
+        <!-- Tombol Awal (Langkah 1) -->
+        <button
+          id="triggerModalBtn"
+          type="button"
+          class="flex items-center gap-2 bg-[#91C4C3] hover:bg-[#B4DEBD] text-[#2C3E50] px-7 py-3 rounded-md font-semibold transition shadow-md"
+        >
+          <i data-lucide="folder-up" class="w-6 h-6"></i>
+          <span>Choose File</span>
+        </button>
+
+        <!-- Inputan Upload (Langkah 2) -->
+        <div id="fileUploadSection" class="hidden space-y-4">
+          <div
+            class="flex items-center justify-between bg-white/20 backdrop-blur-sm rounded-lg p-2 border border-[#FFF7DD]/30"
+          >
+            <input
+              id="fileInput"
+              type="file"
+              name="file"
+              accept=".xlsx"
+              class="flex-7 text-xl text-[#FFF7DD] placeholder-white/700 bg-transparent focus:outline-none file:hidden"
+            />
+            <label
+              for="fileInput"
+              class="inline-flex items-center px-4 py-2 bg-[#91C4C3]/90 hover:bg-[#B4DEBD]/100 text-[#2C3E50] rounded-md cursor-pointer transition"
+            >
+              <i data-lucide="folder-up" class="w-6 h-6 mr-2"></i>
+              Choose File
+            </label>
+          </div>
+
+          <!-- Tombol Process File -->
+          <button
+            id="sendBtn"
+            type="submit"
+            class="flex items-center gap-2 bg-[#B4DEBD] hover:bg-[#91C4C3] text-[#2C3E50] px-5 py-2 rounded-md font-semibold transition shadow-md"
+          >
+            <i data-lucide="send" class="w-6 h-6"></i>
+            <span>Process File</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Modal Petunjuk -->
+    <div
+      id="uploadModal"
+      class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-[#FFF7DD] rounded-2xl p-8 w-[90%] sm:w-[480px] text-center relative shadow-2xl text-gray-700 animate-fade"
+      >
+        <button
+          id="closeModalBtn"
+          class="absolute top-3 right-4 text-2xl hover:text-gray-700 transition"
+        >
+          ✖
+        </button>
+
+        <h2 class="text-2xl font-bold mb-4 text-[#2C3E50]">
+          Petunjuk Unggah File
+        </h2>
+        <p class="text-base sm:text-lg mb-6 text-gray-600 leading-relaxed">
+          Silahkan unduh template transaksi bulanan terlebih dahulu sebelum
+          mengunggah data Anda.
+        </p>
+
+        <div class="flex flex-col space-y-4">
+          <a
+            href="/download-template"
+            class="inline-flex items-center justify-center gap-2 bg-[#B4DEBD] hover:bg-[#91C4C3] text-[#2C3E50] rounded-full px-6 py-3 font-semibold text-lg transition duration-200"
+          >
+            <i data-lucide="file-down" class="w-6 h-6"></i>
+            <span>Unduh Template</span>
+          </a>
+
+          <button
+            id="continueBtn"
+            class="inline-flex items-center justify-center gap-2 bg-[#B4DEBD] hover:bg-[#91C4C3] text-[#2C3E50] rounded-full px-6 py-3 font-semibold text-lg transition duration-200"
+          >
+            <i data-lucide="upload" class="w-6 h-6"></i>
+            <span>Sudah Unduh, Lanjut Unggah</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const modal = document.getElementById("uploadModal");
+      const triggerModalBtn = document.getElementById("triggerModalBtn");
+      const closeModalBtn = document.getElementById("closeModalBtn");
+      const continueBtn = document.getElementById("continueBtn");
+      const fileUploadSection = document.getElementById("fileUploadSection");
+
+      // Buka modal
+      triggerModalBtn.addEventListener("click", () => {
+        modal.classList.remove("hidden");
+      });
+
+      // Tutup modal
+      closeModalBtn.addEventListener("click", () => {
+        modal.classList.add("hidden");
+      });
+
+      // Setelah klik "Sudah Unduh, Lanjut Unggah"
+      continueBtn.addEventListener("click", () => {
+        modal.classList.add("hidden");
+        triggerModalBtn.classList.add("hidden"); // sembunyikan tombol lama
+        fileUploadSection.classList.remove("hidden"); // tampilkan input baru
+      });
+
+      // Aktifkan ikon Lucide
+      lucide.createIcons();
+    </script>
+  </body>
+</html>
