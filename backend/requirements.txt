@@ -1,6 +1,10 @@
-flask
+fastapi
+uvicorn
+python-multipart
+jinja2
 pandas
 openpyxl
 reportlab
 plotly
 google-generativeai
+itsdangerous

@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="pdf:default-font-family" content="Helvetica" />
+    <meta name="pdf:page-margin" content="20mm" />
+    <title>Laporan Keuangan Bulanan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <style>
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        background: #ffffff;
+        min-height: 100vh;
+        padding-top: 80px;
+        padding-bottom: 40px;
+      }
+      
+      /* Decorative background shapes */
+      .bg-shape-top {
+        position: fixed;
+        top: -220px;
+        left: 50%;
+        transform: translateX(-50%) rotate(25deg);
+        width: 780px;
+        height: 480px;
+        background: linear-gradient(135deg, #445D48, #D6CC99);
+        filter: blur(48px);
+        opacity: 0.35;
+        z-index: -1;
+        pointer-events: none;
+        clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%);
+      }
+
+      .chart-card {
+        width: min(960px, 100%);
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+        padding: 20px 26px 28px;
+        margin: 0 auto 28px;
+      }
+      
+      .chart-title {
+        margin: 0 0 12px;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        color: #001524;
+      }
+
+      .sheet {
+        width: min(720px, 100%);
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 25px 35px 30px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        margin: 0 auto;
+      }
+
+      .header {
+        background: #cfcfcf;
+        padding: 14px;
+        text-align: center;
+        margin-bottom: 18px;
+        line-height: 1.4;
+      }
+      
+      .header .nama {
+        font-style: italic;
+        font-size: 16px;
+        margin: 0;
+      }
+      
+      .header .judul {
+        font-weight: bold;
+        font-size: 18px;
+        margin: 2px 0;
+      }
+      
+      .header .periode {
+        margin: 0;
+        font-size: 14px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13.5px;
+      }
+
+      th {
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 1px solid #000;
+        padding: 6px 4px;
+      }
+
+      td {
+        padding: 4px 4px;
+        vertical-align: top;
+      }
+
+      .col-left {
+        width: 45%;
+      }
+      
+      .col-mid {
+        width: 35%;
+        padding-left: 25px;
+      }
+      
+      .col-right {
+        width: 20%;
+        text-align: right;
+      }
+
+      .laba {
+        background: #cfcfcf;
+        font-weight: bold;
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+
+      .spacer td {
+        padding: 6px 0;
+      }
+
+      .export-btn {
+        margin-top: 16px;
+        text-align: left;
+      }
+
+      .export-btn button {
+        background: #445D48;
+        border: none;
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-family: inherit;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+
+      .export-btn button:hover {
+        background: #001524;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-shape-top"></div>
+    
+    <!-- Navbar konsisten dengan halaman lain -->
+    <nav class="fixed top-0 left-0 w-full bg-[#445D48]/95 text-white py-4 px-8 flex justify-between items-center shadow-lg z-50 backdrop-blur-md">
+      <div class="font-extrabold text-2xl">
+        Finansi<span class="text-[#D6CC99]">AI</span>
+      </div>
+      <div class="space-x-6">
+        <a href="/" class="hover:text-[#D6CC99] transition font-semibold">Home</a>
+        <a href="/dashboard" class="hover:text-[#D6CC99] transition font-semibold">Dashboard</a>
+      </div>
+    </nav>
+
+    <!-- Container rata tengah -->
+    <div class="max-w-[1000px] mx-auto px-4">
+      <!-- Grafik ringkasan -->
+      <div class="chart-card">
+        <div class="chart-title">Ringkasan Bulanan</div>
+        <div id="chart" style="width:100%; height:380px;"></div>
+      </div>
+
+      <!-- Sheet laporan -->
+      <div class="sheet">
+      <div class="header">
+        <p class="nama">"{{ hasil.NamaUsaha }}"</p>
+        <p class="judul">LAPORAN KEUANGAN BULANAN</p>
+        <p class="periode">
+          Untuk Bulan "{{ hasil.Bulan }}" Tahun "{{ hasil.Tahun }}"
+        </p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="col-left">Keterangan</th>
+            <th class="col-mid"></th>
+            <th class="col-right">Jumlah (Rp)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Modal -->
+          <tr>
+            <td class="col-left">Modal</td>
+            <td class="col-mid"></td>
+            <td class="col-right">
+              <span class="money" data-val="{{ hasil.Modal }}"></span>
+            </td>
+          </tr>
+
+          <!-- Pendapatan -->
+          <tr>
+            <td class="col-left">Pendapatan</td>
+            <td class="col-mid"></td>
+            <td class="col-right">
+              <span class="money" data-val="{{ hasil.Pendapatan }}"></span>
+            </td>
+          </tr>
+
+          <tr class="spacer">
+            <td colspan="3"></td>
+          </tr>
+
+          <!-- Beban header -->
+          <tr>
+            <td class="col-left">Beban :</td>
+            <td class="col-mid"></td>
+            <td class="col-right"></td>
+          </tr>
+
+          <!-- Sub-beban rata & sejajar -->
+          <tr>
+            <td class="col-left"></td>
+            <td class="col-mid">Beban Usaha</td>
+            <td class="col-right">
+              <span class="money" data-val="{{ hasil.BebanUsaha }}"></span>
+            </td>
+          </tr>
+          <tr>
+            <td class="col-left"></td>
+            <td class="col-mid">Beban Lain-lain</td>
+            <td class="col-right">
+              <span class="money" data-val="{{ hasil.BebanLain }}"></span>
+            </td>
+          </tr>
+          <tr>
+            <td class="col-left"></td>
+            <td class="col-mid">Total Beban</td>
+            <td class="col-right">
+              <span class="money" data-val="{{ hasil.TotalBeban }}"></span>
+            </td>
+          </tr>
+
+          <tr class="spacer">
+            <td colspan="3"></td>
+          </tr>
+
+          <!-- Laba Bersih -->
+          <tr class="laba">
+            <td class="col-left">Laba Bersih</td>
+            <td class="col-mid"></td>
+            <td class="col-right">
+              <span class="money" data-val="{{ hasil.LabaBersih }}"></span>
+            </td>
+          </tr>
+        </tbody>
+  </table>
+
+        <div class="export-btn">
+          <a href="/download_pdf">
+            <button type="button">⬇️ Download PDF</button>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Format angka ke Rp X.XXX.XXX
+      function formatRupiah(n) {
+        n = Number(n) || 0;
+        return "Rp " + n.toLocaleString("id-ID");
+      }
+      document.querySelectorAll(".money").forEach((el) => {
+        el.textContent = formatRupiah(el.getAttribute("data-val"));
+      });
+
+      // Modern Plotly chart dengan palet baru
+      (function(){
+        try {
+          const summary = JSON.parse('{{ {"Pendapatan": hasil.Pendapatan, "Pengeluaran": hasil.TotalBeban, "LabaBersih": hasil.LabaBersih} | tojson | safe }}');
+          const labels = ['Pendapatan','Pengeluaran','Laba Bersih'];
+          const values = [summary.Pendapatan, summary.Pengeluaran, summary.LabaBersih];
+          const colors = ['#445D48','#D6CC99','#001524'];
+
+          const data = [{
+            x: labels,
+            y: values,
+            type: 'bar',
+            marker: {
+              color: colors,
+              line: { color: '#FDE5D4', width: 2 }
+            },
+            hovertemplate: '<b>%{x}</b><br>Rp %{y:,}<extra></extra>',
+            text: values.map(v => 'Rp ' + Number(v||0).toLocaleString('id-ID')),
+            textposition: 'outside',
+            cliponaxis: false,
+            opacity: 0.95
+          }];
+
+          const layout = {
+            margin: { l: 40, r: 20, t: 10, b: 60 },
+            yaxis: {
+              tickprefix: 'Rp ',
+              separatethousands: true,
+              gridcolor: '#D6CC9933',
+              zeroline: false,
+              linecolor: '#445D4800'
+            },
+            xaxis: {
+              tickfont: { size: 12, color: '#001524', family: 'Inter' },
+              linecolor: '#445D4800'
+            },
+            font: { family: 'Inter, sans-serif', color: '#001524' },
+            plot_bgcolor: '#ffffff',
+            paper_bgcolor: '#ffffff',
+            showlegend: false,
+            bargap: 0.25,
+            hoverlabel: {
+              font: { family: 'Inter', size: 12 },
+              bgcolor: '#FDE5D4',
+              bordercolor: '#445D48'
+            }
+          };
+          
+          const config = { displayModeBar: false, responsive: true };
+          Plotly.newPlot('chart', data, layout, config);
+        } catch (e) {
+          console.error('Gagal render chart', e);
+        }
+      })();
+    </script>
+  </body>
+</html>

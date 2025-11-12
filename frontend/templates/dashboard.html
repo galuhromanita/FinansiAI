@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinansiAI - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes popUp {
+        from {
+          transform: scale(0.9);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.3s ease-out;
+      }
+      .animate-popUp {
+        animation: popUp 0.25s ease-out;
+      }
+    </style>
+  </head>
+
+  <body class="bg-white h-screen overflow-hidden font-[Inter]">
+    <!-- Error Modal (Flash Messages dari Backend) - hanya tampil jika kategori 'error' ada -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% set ns =
+    namespace(errors=[]) %} {% if messages %} {% for category, message in
+    messages %} {% if category == 'error' %} {% set ns.errors = ns.errors +
+    [message] %} {% endif %} {% endfor %} {% endif %} {% if ns.errors %}
+    <div
+      id="errorModal"
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] animate-fadeIn"
+    >
+      <div
+        class="bg-gradient-to-br from-[#FFFFFF] via-[#F5F5F0] to-[#EDEAD6] rounded-2xl p-8 w-[90%] sm:w-[420px] text-center shadow-2xl animate-popUp border-2 border-red-400"
+      >
+        <div class="flex items-center justify-center gap-3 mb-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-10 h-10 text-red-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
+          </svg>
+          <h2 class="text-2xl font-extrabold text-[#001524]">
+            Terjadi Kesalahan
+          </h2>
+        </div>
+        {% for msg in ns.errors %}
+        <p class="text-[#001524]/80 text-base leading-relaxed mb-2">
+          {{ msg }}
+        </p>
+        {% endfor %}
+        <button
+          onclick="document.getElementById('errorModal').remove()"
+          class="bg-[#445D48] hover:bg-[#001524] text-white font-semibold px-8 py-3 rounded-full shadow-md transition duration-300"
+        >
+          Tutup
+        </button>
+      </div>
+    </div>
+    {% endif %} {% endwith %}
+
+    <!-- Client-Side Error Modal (untuk validasi JS) -->
+    <div
+      id="clientErrorModal"
+      class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] animate-fadeIn"
+    >
+      <div
+        class="bg-gradient-to-br from-[#FFFFFF] via-[#F5F5F0] to-[#EDEAD6] rounded-2xl p-8 w-[90%] sm:w-[420px] text-center shadow-2xl animate-popUp border-2 border-red-400"
+      >
+        <div class="flex items-center justify-center gap-3 mb-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-10 h-10 text-red-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
+          </svg>
+          <h2 class="text-2xl font-extrabold text-[#001524]">Peringatan</h2>
+        </div>
+
+        <p
+          id="clientErrorMessage"
+          class="text-[#001524]/80 text-base leading-relaxed mb-6"
+        >
+          <!-- Pesan error akan diisi oleh JavaScript -->
+        </p>
+
+        <button
+          id="closeClientErrorBtn"
+          class="bg-[#445D48] hover:bg-[#001524] text-white font-semibold px-8 py-3 rounded-full shadow-md transition duration-300"
+        >
+          Mengerti
+        </button>
+      </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav
+      class="fixed top-0 left-0 w-full bg-[#445D48]/95 text-white py-4 px-8 flex justify-between items-center shadow-lg z-50 backdrop-blur-md"
+    >
+      <div class="font-extrabold text-2xl">
+        Finansi<span class="text-[#D6CC99]">AI</span>
+      </div>
+      <div class="space-x-6">
+        <a href="/" class="hover:text-[#D6CC99] transition font-semibold"
+          >Home</a
+        >
+        <a
+          href="/dashboard"
+          class="hover:text-[#D6CC99] transition font-semibold"
+          >Dashboard</a
+        >
+      </div>
+    </nav>
+
+    <!-- Background Gradient -->
+    <div
+      aria-hidden="true"
+      class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+    >
+      <div
+        style="
+          clip-path: polygon(
+            74.1% 44.1%,
+            100% 61.6%,
+            97.5% 26.9%,
+            85.5% 0.1%,
+            80.7% 2%,
+            72.5% 32.5%,
+            60.2% 62.4%,
+            52.4% 68.1%,
+            47.5% 58.3%,
+            45.2% 34.5%,
+            27.5% 76.7%,
+            0.1% 64.9%,
+            17.9% 100%,
+            27.6% 76.8%,
+            76.1% 97.7%,
+            74.1% 44.1%
+          );
+        "
+        class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#445D48] to-[#D6CC99] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+      ></div>
+    </div>
+
+    <!-- Konten Tengah -->
+    <main
+      class="relative z-10 flex flex-col items-center justify-center h-full px-6 text-center space-y-6"
+    >
+      <h1 class="text-6xl sm:text-7xl font-extrabold text-[#001524]">
+        Kelola dengan <span class="text-[#445D48]">Finansi</span
+        ><span class="text-[#D6CC99]">AI</span>
+      </h1>
+
+      <p
+        class="text-xl sm:text-2xl text-[#001524]/80 max-w-2xl leading-relaxed"
+      >
+        Unggah file transaksi bulanan Anda dan biarkan AI menyusun laporan
+        keuangan profesional.
+      </p>
+
+      <form
+        id="uploadForm"
+        action="/upload"
+        method="post"
+        enctype="multipart/form-data"
+        class="space-y-5"
+      >
+        <button
+          id="triggerModalBtn"
+          type="button"
+          class="flex items-center gap-2 bg-[#445D48] hover:bg-[#001524] text-white px-7 py-3 rounded-md font-semibold transition shadow-md mx-auto"
+        >
+          <i data-lucide="folder-up" class="w-6 h-6"></i>
+          <span>Upload File</span>
+        </button>
+
+        <div id="fileUploadSection" class="hidden space-y-4">
+          <div
+            class="flex items-center justify-between bg-white/70 backdrop-blur-sm rounded-lg p-2 border border-[#445D48]/20"
+          >
+            <input
+              id="fileInput"
+              type="file"
+              name="file"
+              accept=".xlsx"
+              class="flex-7 text-lg text-[#001524] bg-transparent focus:outline-none file:hidden"
+            />
+            <label
+              for="fileInput"
+              class="inline-flex items-center px-4 py-2 bg-[#445D48]/90 hover:bg-[#001524] text-white rounded-md cursor-pointer transition"
+            >
+              <i data-lucide="file-up" class="w-5 h-5 mr-2"></i>
+              Pilih File
+            </label>
+          </div>
+
+          <button
+            id="sendBtn"
+            type="submit"
+            class="flex items-center gap-2 bg-[#445D48] hover:bg-[#001524] text-white px-5 py-2 rounded-md font-semibold transition shadow-md mx-auto"
+          >
+            <i data-lucide="send" class="w-5 h-5"></i>
+            <span>Proses File</span>
+          </button>
+        </div>
+      </form>
+    </main>
+
+    <!-- Modal Petunjuk -->
+    <div
+      id="uploadModal"
+      class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-gradient-to-br from-[#FFFFFF] via-[#F5F5F0] to-[#EDEAD6] rounded-2xl p-8 w-[90%] sm:w-[480px] text-center relative shadow-2xl text-[#001524] border border-[#445D48]/30 animate-popUp"
+      >
+        <button
+          id="closeModalBtn"
+          class="absolute top-3 right-4 text-2xl hover:text-[#445D48] transition"
+        >
+          ✖
+        </button>
+
+        <h2 class="text-2xl font-bold mb-4 text-[#001524]">
+          Petunjuk Unggah File
+        </h2>
+        <p class="text-base sm:text-lg mb-6 text-[#001524]/70">
+          Unduh template transaksi bulanan terlebih dahulu sebelum mengunggah
+          data Anda.
+        </p>
+
+        <div class="flex flex-col space-y-4">
+          <!-- Tombol Unduh Template -->
+          <a
+            href="/download-template"
+            class="inline-flex items-center justify-center gap-2 bg-[#445D48] hover:bg-[#001524] text-white rounded-full px-6 py-3 font-semibold text-lg transition"
+          >
+            <i data-lucide="file-down" class="w-6 h-6"></i> Unduh Template
+          </a>
+
+          <!-- Tombol Lanjut -->
+          <button
+            id="continueBtn"
+            class="inline-flex items-center justify-center gap-2 bg-[#445D48] hover:bg-[#001524] text-white rounded-full px-6 py-3 font-semibold text-lg transition"
+          >
+            <i data-lucide="upload" class="w-6 h-6"></i> Sudah Unduh, Lanjut
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const modal = document.getElementById("uploadModal");
+      const triggerModalBtn = document.getElementById("triggerModalBtn");
+      const closeModalBtn = document.getElementById("closeModalBtn");
+      const continueBtn = document.getElementById("continueBtn");
+      const fileUploadSection = document.getElementById("fileUploadSection");
+      const fileInput = document.getElementById("fileInput");
+      const uploadForm = document.getElementById("uploadForm");
+      const sendBtn = document.getElementById("sendBtn");
+
+      // Client error modal elements
+      const clientErrorModal = document.getElementById("clientErrorModal");
+      const clientErrorMessage = document.getElementById("clientErrorMessage");
+      const closeClientErrorBtn = document.getElementById(
+        "closeClientErrorBtn"
+      );
+
+      // Function untuk menampilkan error modal custom
+      function showClientError(message) {
+        clientErrorMessage.textContent = message;
+        clientErrorModal.classList.remove("hidden");
+      }
+
+      // Tutup client error modal
+      closeClientErrorBtn.addEventListener("click", () => {
+        clientErrorModal.classList.add("hidden");
+      });
+
+      // Buka modal petunjuk
+      triggerModalBtn.addEventListener("click", () =>
+        modal.classList.remove("hidden")
+      );
+
+      // Tutup modal petunjuk
+      closeModalBtn.addEventListener("click", () =>
+        modal.classList.add("hidden")
+      );
+
+      // Lanjut ke upload section
+      continueBtn.addEventListener("click", () => {
+        modal.classList.add("hidden");
+        triggerModalBtn.classList.add("hidden");
+        fileUploadSection.classList.remove("hidden");
+      });
+
+      // CLIENT-SIDE VALIDATION: Cek file size (max 2MB) dan apakah file sudah dipilih
+      uploadForm.addEventListener("submit", (e) => {
+        const file = fileInput.files[0];
+
+        // Validasi 1: Pastikan file sudah dipilih
+        if (!file) {
+          e.preventDefault();
+          showClientError("Silakan pilih file Excel terlebih dahulu!");
+          return;
+        }
+
+        // Validasi 2: Cek ukuran file (max 2MB = 2 * 1024 * 1024 bytes)
+        const maxSize = 2 * 1024 * 1024;
+        if (file.size > maxSize) {
+          e.preventDefault();
+          const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+          showClientError(
+            `Ukuran file terlalu besar! Maksimal 2MB.\n\nUkuran file Anda: ${fileSizeMB} MB`
+          );
+          return;
+        }
+
+        // Validasi 3: Cek ekstensi file
+        if (!file.name.endsWith(".xlsx")) {
+          e.preventDefault();
+          showClientError(
+            "Format file salah! Hanya file .xlsx yang diperbolehkan."
+          );
+          return;
+        }
+
+        // Jika semua validasi lolos, tampilkan loading state
+        sendBtn.disabled = true;
+        sendBtn.innerHTML =
+          '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> <span>Mengunggah...</span>';
+        lucide.createIcons();
+      });
+
+      // Disable tombol "Proses File" jika belum ada file yang dipilih
+      fileInput.addEventListener("change", () => {
+        if (fileInput.files.length > 0) {
+          sendBtn.disabled = false;
+          sendBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        } else {
+          sendBtn.disabled = true;
+          sendBtn.classList.add("opacity-50", "cursor-not-allowed");
+        }
+      });
+
+      // Initial state: disable tombol submit
+      sendBtn.disabled = true;
+      sendBtn.classList.add("opacity-50", "cursor-not-allowed");
+
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

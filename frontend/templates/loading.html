@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinansiAI - Memproses Data</title>
+    <script>
+      setTimeout(() => {
+        window.location.href = "/process";
+      }, 1500);
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-white h-screen overflow-hidden font-[Inter]">
+    <!-- Navbar -->
+    <nav
+      class="fixed top-0 left-0 w-full bg-[#445D48]/95 text-white py-4 p x-8 flex justify-center items-center shadow-lg z-50 backdrop-blur-md"
+    >
+      <div class="font-extrabold text-2xl">
+        Finansi<span class="text-[#D6CC99]">AI</span>
+      </div>
+    </nav>
+
+    <!-- Background Gradient -->
+    <div
+      aria-hidden="true"
+      class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+    >
+      <div
+        style="
+          clip-path: polygon(
+            74.1% 44.1%,
+            100% 61.6%,
+            97.5% 26.9%,
+            85.5% 0.1%,
+            80.7% 2%,
+            72.5% 32.5%,
+            60.2% 62.4%,
+            52.4% 68.1%,
+            47.5% 58.3%,
+            45.2% 34.5%,
+            27.5% 76.7%,
+            0.1% 64.9%,
+            17.9% 100%,
+            27.6% 76.8%,
+            76.1% 97.7%,
+            74.1% 44.1%
+          );
+        "
+        class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#445D48] to-[#D6CC99] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+      ></div>
+    </div>
+
+    <!-- Konten Loading -->
+    <main
+      class="relative z-10 flex flex-col items-center justify-center h-full text-center gap-6"
+    >
+      <div
+        class="w-16 h-16 border-4 border-[#001524]/20 border-t-[#445D48] rounded-full animate-spin"
+      ></div>
+      <h2 class="text-4xl sm:text-5xl font-extrabold text-[#001524]">
+        Memproses Data...
+      </h2>
+      <p class="text-[#001524]/70 text-lg max-w-xl leading-relaxed">
+        Mohon tunggu sebentar.<br />
+        <span class="text-[#445D48] font-semibold">FinansiAI</span> sedang
+        menyusun laporan Anda.
+      </p>
+    </main>
+  </body>
+</html>
