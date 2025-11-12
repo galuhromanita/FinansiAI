@@ -75,11 +75,11 @@ def allowed_file(filename: str) -> bool:
 # === Routes ===
 @app.get("/", response_class=HTMLResponse, name="landing")
 async def landing(request: Request):
-    return templates.TemplateResponse("landing.html", {"request": request})
+    return templates.TemplateResponse("about.html", {"request": request})
 
 @app.get("/dashboard", response_class=HTMLResponse, name="dashboard")
 async def dashboard(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    return templates.TemplateResponse("home.html", {"request": request})
 
 @app.get("/download-template", name="download_template")
 async def download_template(request: Request):
