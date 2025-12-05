@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinansiAI</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Main CSS -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='/css/style.css') }}"
+    />
+  </head>
+
+  <body class="bg-white min-h-screen overflow-hidden font-[Inter]">
+    <!-- WRAPPER -->
+    <div
+      class="relative isolate min-h-screen px-6 lg:px-8 grid place-items-center"
+    >
+      <!-- BACKGROUND -->
+      <div aria-hidden="true" class="bg-shape-landing"></div>
+
+      <!-- MAIN CONTENT -->
+      <div class="mx-auto max-w-2xl w-full text-center">
+        <h1 class="landing-title">
+          Selamat Datang di <span class="text-[#445D48]">Finansi</span
+          ><span class="text-[#D6CC99]">AI</span>
+        </h1>
+
+        <p class="landing-subtitle">
+          Unggah transaksi bulanan Anda dan biarkan AI kami membuat laporan
+          keuangan profesional secara otomatis.
+        </p>
+
+        <!-- GET STARTED BUTTON -->
+        <div class="mt-10 flex justify-center">
+          <a id="getStartedBtn" href="/dashboard" class="btn-primary">
+            Get Started
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- TUTORIAL MODAL -->
+    <div id="tutorialModal" class="modal hidden">
+      <div id="tutorialOverlay" class="modal-overlay"></div>
+
+      <div class="modal-box-landing">
+        <button id="tutorialClose" class="modal-close-btn">✖</button>
+
+        <div class="p-4 md:p-6 flex flex-col h-full">
+          <h2 class="modal-title">Tutorial Pengisian Template Excel</h2>
+          <p class="modal-desc">
+            Tonton video singkat berikut untuk melihat cara mengisi file sesuai
+            template.
+          </p>
+
+          <div class="mt-4 flex-1 overflow-auto">
+            <div class="video-wrapper">
+              <iframe
+                id="tutorialVideoFrame"
+                src="https://www.youtube.com/embed/eG-qwROWPMg"
+                class="video-iframe"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <div class="flex items-center gap-3">
+              <input
+                id="dontShowAgain"
+                type="checkbox"
+                class="h-4 w-4 text-[#445D48]"
+              />
+              <label for="dontShowAgain" class="text-sm text-gray-700">
+                jangan tampilkan kembali
+              </label>
+            </div>
+
+            <button id="tutorialContinue" class="btn-primary px-4 py-2 text-sm">
+              Lanjut ke Dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const KEY = "finansiai_hide_tutorial_v1";
+        const getStarted = document.getElementById("getStartedBtn");
+        const modal = document.getElementById("tutorialModal");
+        const overlay = document.getElementById("tutorialOverlay");
+        const closeBtn = document.getElementById("tutorialClose");
+        const continueBtn = document.getElementById("tutorialContinue");
+        const checkbox = document.getElementById("dontShowAgain");
+
+        function showModal() {
+          modal.classList.remove("hidden");
+          modal.classList.add("flex");
+          document.body.style.overflow = "hidden";
+        }
+
+        function hideModal() {
+          modal.classList.add("hidden");
+          modal.classList.remove("flex");
+          document.body.style.overflow = "";
+        }
+
+        getStarted.addEventListener("click", function (e) {
+          e.preventDefault();
+          showModal();
+        });
+
+        overlay.addEventListener("click", hideModal);
+        closeBtn.addEventListener("click", hideModal);
+        continueBtn.addEventListener("click", function () {
+          if (checkbox.checked) localStorage.setItem(KEY, "1");
+          window.location.href = "/dashboard";
+        });
+      });
+    </script>
+  </body>
+</html>

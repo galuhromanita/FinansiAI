@@ -16,7 +16,6 @@ def format_rupiah(value):
 
 
 def generate_pdf(hasil, output_path):
-    # Gunakan ukuran A5 landscape (lebih lebar dari tinggi)
     doc = SimpleDocTemplate(
         output_path,
         pagesize=landscape(A5),
