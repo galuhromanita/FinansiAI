@@ -39,63 +39,87 @@ def extract_json(text):
 
 def analyze_data(parsed_excel: dict):
 
+    meta = parsed_excel.get("meta", {})
+
     raw = parsed_excel["raw_rows"]
     cols = parsed_excel["columns"]
 
-    formatted_rows = []
-    for i, row in enumerate(raw[:20], start=1):
-        d = dict(zip(cols, row))
-        formatted_rows.append(
-            f"{i}) {d.get('Tanggal','')} | {d.get('Keterangan','')} | {d.get('Jumlah','')}"
-        )
+    structured_rows = []
+    modal = 0
+    pendapatan = 0
+    beban_usaha = 0
+    beban_lain = 0
+    warnings = []
 
-    data_text = "\n".join(formatted_rows)
+    # 1️⃣ BENTUK DATA TERSTRUKTUR
+    for row in raw:
+        try:
+            data = {
+                "Tanggal": row[cols.index("Tanggal")],
+                "Jenis Transaksi": row[cols.index("Jenis Transaksi")],
+                "Keterangan": str(row[cols.index("Keterangan")]).lower(),
+                "Jumlah": float(row[cols.index("Jumlah")])
+            }
+            structured_rows.append(data)
+        except Exception as e:
+            warnings.append(f"Baris tidak valid: {row}")
+            continue
 
-    template = {
-        "NamaUsaha": "",
-        "Bulan": "",
-        "Tahun": "",
-        "Modal": 0,
-        "Pendapatan": 0,
-        "BebanUsaha": 0,
-        "BebanLain": 0,
-        "TotalBeban": 0,
-        "LabaBersih": 0,
-        "Warnings": []
+    # 2️⃣ HITUNG MANUAL (TANPA AI)
+    for r in structured_rows:
+        ket = r["Keterangan"]
+        jumlah = r["Jumlah"]
+
+        if "modal" in ket:
+            modal += jumlah
+        elif "penjualan" in ket or "pendapatan" in ket:
+            pendapatan += jumlah
+        elif "bahan" in ket or "alat" in ket or "gaji" in ket:
+            beban_usaha += jumlah
+        else:
+            beban_lain += jumlah
+
+    total_beban = beban_usaha + beban_lain
+    laba_bersih = pendapatan - total_beban
+
+    hasil_final = {
+        "NamaUsaha": meta.get("NamaUsaha", "Tidak Diketahui"),
+        "Bulan": meta.get("Bulan", ""),
+        "Tahun": meta.get("Tahun", ""),
+        "Modal": modal,
+        "Pendapatan": pendapatan,
+        "BebanUsaha": beban_usaha,
+        "BebanLain": beban_lain,
+        "TotalBeban": total_beban,
+        "LabaBersih": laba_bersih,
+        "Warnings": warnings
     }
 
+    # 3️⃣ AI HANYA UNTUK NARASI (OPTIONAL)
     prompt = f"""
-Analisis daftar transaksi berikut dan kembalikan hanya JSON valid:
+Berikut adalah laporan keuangan UMKM dalam format JSON:
 
-{json.dumps(template)}
+{json.dumps(hasil_final, indent=2)}
 
-Data:
-{data_text}
+Tugas Anda:
+- Jelaskan kondisi keuangan usaha secara singkat
+- Berikan insight
+- Peringatkan jika laba bersih negatif
 
-Aturan:
-- Modal = berisi 'modal'
-- Pendapatan = 'penjualan' / 'pendapatan'
-- BebanUsaha = pembelian bahan / alat usaha
-- BebanLain = selain itu
-- Jika ambigu → masukkan ke Warnings
-Hanya jawab JSON.
+Jawab dalam 1 paragraf singkat, TANPA JSON.
 """
 
-    # MODEL PRO (lebih stabil)
-    model = genai.GenerativeModel("models/gemini-pro-latest")
+    # 4️⃣ Panggil Gemini hanya untuk insight naratif (dengan fallback jika gagal)
+    try:
+        model = genai.GenerativeModel("gemini-pro")
+        response = model.generate_content(prompt)
+        insight = get_text(response).strip()
+        if not insight:
+            raise ValueError("AI mengembalikan teks kosong")
+    except Exception as e:
+        print(f"AI insight error: {e}")
+        insight = "Analisis otomatis tidak tersedia untuk saat ini, namun angka laporan keuangan sudah dihitung dari data Anda."
 
-    response = model.generate_content(
-        prompt,
-        generation_config={
-            "temperature": 0.0,
-            "max_output_tokens": 4096,  # lebih tinggi
-        }
-    
-    )
-    text = get_text(response)
+    hasil_final["InsightAI"] = insight
 
-    if not text.strip():
-        try:
-            text = response.candidates[0].content.parts[0].text
-        except:
-            pass
+    return hasil_final

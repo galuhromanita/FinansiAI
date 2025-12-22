@@ -150,8 +150,12 @@
         </table>
 
         <div class="export-btn">
-          <a href="/download_pdf">
-            <button type="button">⬇️ Download PDF</button>
+          <a
+            href="/download_pdf"
+            class="btn-upload-submit flex items-center justify-center gap-2"
+          >
+            <i data-lucide="file-down" class="w-6 h-6"></i>
+            <span>Download PDF</span>
           </a>
         </div>
       </div>
@@ -198,13 +202,14 @@
           "chart",
           data,
           {
-            margin: { l: 40, r: 20, t: 10, b: 60 },
+            margin: { l: 80, r: 20, t: 10, b: 60 },
             yaxis: {
               tickprefix: "Rp ",
               separatethousands: true,
               zeroline: true,
-              tickformat: ",.0f", // ⬅ menghilangkan angka koma
-              rangemode: "tozero", // ⬅ agar tidak muncul nilai minus
+              tickformat: ",.0f", // menghilangkan angka koma
+              rangemode: "tozero", // agar tidak muncul nilai minus
+              automargin: true,
             },
             showlegend: false,
             plot_bgcolor: "#ffffff",

@@ -146,11 +146,6 @@
   align-items: center;
 }
 
-/* ============================================================
-   FINANSIAI — HOME PAGE STYLES
-   Semua styling yang tadinya inline dipindahkan ke sini.
-   Tampilan dijamin 100% sama seperti versi awal.
-============================================================ */
 
 /* ============================================================
    1. BACKGROUND GRADIENT SHAPE
@@ -950,8 +945,30 @@
 }
 
 /* button proses file not allowed */
-/* button proses file not allowed */
 .btn-upload-submit:disabled {
   opacity: 0.5 !important;
   cursor: not-allowed !important;
+}
+
+.upload-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+}
+
+/* STYLE tombol Choose File */
+.upload-input::file-selector-button {
+  background-color: #2563eb; /* biru */
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  margin-right: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* hover */
+.upload-input::file-selector-button:hover {
+  background-color: #1d4ed8;
 }

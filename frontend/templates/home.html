@@ -19,7 +19,7 @@
     <!-- Custom CSS -->
     <link
       rel="stylesheet"
-      href="{{ url_for('static', path='/css/style.css') }}"
+      href="{{ url_for('static', path='css/style.css') }}"
     />
   </head>
 
@@ -27,9 +27,6 @@
     class="bg-white h-screen overflow-hidden font-[Inter]"
     data-show-upload="{{ 1 if show_upload|default(false) else 0 }}"
   >
-    <!-- ============================================ -->
-    <!-- FLASH MESSAGE HANDLING -->
-    <!-- ============================================ -->
     <!-- ============================================ -->
     <!-- FLASH MESSAGE HANDLING -->
     <!-- ============================================ -->
@@ -114,30 +111,54 @@
         enctype="multipart/form-data"
         class="space-y-5"
       >
+        <!-- Trigger Modal -->
         <button id="triggerModalBtn" type="button" class="btn-upload-trigger">
           <i data-lucide="folder-up" class="w-6 h-6"></i>
           <span>Upload File</span>
         </button>
 
+        <!-- Upload Section -->
         <div id="fileUploadSection" class="hidden space-y-4">
-          <div class="upload-box">
+          <div class="flex gap-3 items-start">
+            <!-- Hidden Input -->
             <input
               id="fileInput"
               type="file"
               name="file"
               accept=".xlsx"
-              class="upload-input"
+              class="hidden"
             />
-            <label for="fileInput" class="upload-label">
-              <i data-lucide="file-up" class="w-5 h-5 mr-2"></i>
-              Pilih File
-            </label>
-          </div>
 
-          <button id="sendBtn" type="submit" class="btn-upload-submit" disabled>
-            <i data-lucide="send" class="w-5 h-5"></i>
-            <span>Proses File</span>
-          </button>
+            <!-- Filename Display -->
+            <span
+              id="fileName"
+              class="flex-1 px-6 py-3 border rounded-lg text-gray-500 text-sm"
+            >
+              Belum ada file yang dipilih
+            </span>
+
+            <!-- Right Column Buttons -->
+            <div class="flex flex-col gap-3 w-[170px]">
+              <button
+                type="button"
+                id="chooseFileBtn"
+                class="btn-upload-submit flex items-center justify-center gap-2 w-full"
+              >
+                <i data-lucide="upload" class="w-5 h-5"></i>
+                <span>Pilih File</span>
+              </button>
+
+              <button
+                id="sendBtn"
+                type="submit"
+                class="btn-upload-submit flex items-center justify-center gap-2 w-full"
+                disabled
+              >
+                <i data-lucide="send" class="w-5 h-5"></i>
+                <span>Proses File</span>
+              </button>
+            </div>
+          </div>
         </div>
       </form>
 
@@ -191,7 +212,7 @@
               <div class="modal-video-wrapper">
                 <iframe
                   id="tutorialVideoFrameHome"
-                  src="https://www.youtube.com/embed/eG-qwROWPMg"
+                  src="https://www.youtube.com/embed/WmuCe1ZaTqY"
                   class="modal-video-iframe"
                   allowfullscreen
                 ></iframe>
@@ -375,6 +396,26 @@
         if (fileInput.files.length > 0) {
           sendBtn.disabled = false;
         } else {
+          sendBtn.disabled = true;
+        }
+      });
+
+      // CHOOSE FILE BUTTON LOGIC
+      const chooseFileBtn = document.getElementById("chooseFileBtn");
+      const fileName = document.getElementById("fileName");
+
+      chooseFileBtn.addEventListener("click", () => {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", () => {
+        if (fileInput.files.length > 0) {
+          fileName.textContent = fileInput.files[0].name;
+          fileName.classList.remove("text-gray-500");
+          fileName.classList.add("text-gray-700");
+          sendBtn.disabled = false;
+        } else {
+          fileName.textContent = "Belum ada file dipilih";
           sendBtn.disabled = true;
         }
       });
