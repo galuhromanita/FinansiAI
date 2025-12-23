@@ -106,20 +106,12 @@
     </script>
 
     <script>
+      // Landing page: langsung ke dashboard tanpa popup tutorial
       document.addEventListener("DOMContentLoaded", function () {
-        const KEY = "finansiai_hide_tutorial_v1";
-        const getStarted = document.getElementById("getStartedBtn");
         const modal = document.getElementById("tutorialModal");
         const overlay = document.getElementById("tutorialOverlay");
         const closeBtn = document.getElementById("tutorialClose");
         const continueBtn = document.getElementById("tutorialContinue");
-        const checkbox = document.getElementById("dontShowAgain");
-
-        function showModal() {
-          modal.classList.remove("hidden");
-          modal.classList.add("flex");
-          document.body.style.overflow = "hidden";
-        }
 
         function hideModal() {
           modal.classList.add("hidden");
@@ -127,17 +119,9 @@
           document.body.style.overflow = "";
         }
 
-        getStarted.addEventListener("click", function (e) {
-          e.preventDefault();
-          showModal();
-        });
-
         overlay.addEventListener("click", hideModal);
         closeBtn.addEventListener("click", hideModal);
-        continueBtn.addEventListener("click", function () {
-          if (checkbox.checked) localStorage.setItem(KEY, "1");
-          window.location.href = "/dashboard";
-        });
+        continueBtn.addEventListener("click", hideModal);
       });
     </script>
   </body>
