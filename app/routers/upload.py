@@ -54,8 +54,10 @@ async def upload_file(request: Request, file: UploadFile = File(None)):
     # E) VALIDASI: APAKAH INI TEMPLATE FINANSIAI?
     # ======================================================
     try:
-        df = pd.read_excel(save_path, header=None)
-    except:
+        # Gunakan engine openpyxl dan log error ke terminal untuk debug
+        df = pd.read_excel(save_path, header=None, engine="openpyxl")
+    except Exception as e:
+        print("[UPLOAD] Gagal membaca Excel:", e)
         request.session["flash_error"] = "File tidak dapat dibaca, pastikan file Excel valid."
         return RedirectResponse("/dashboard", status_code=HTTP_303_SEE_OTHER)
 
