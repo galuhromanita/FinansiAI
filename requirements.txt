@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+pandas
+numpy
+google-generativeai
+reportlab
+jinja2
+python-multipart
