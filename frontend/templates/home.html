@@ -191,49 +191,47 @@
             </button>
           </div>
         </div>
+      </div>
 
-        <!-- ===== TUTORIAL MODAL ===== -->
-        <div id="tutorialModalHome" class="modal-tutorial hidden">
-          <div id="tutorialOverlayHome" class="modal-tutorial-overlay"></div>
+      <!-- ===== TUTORIAL MODAL (TERPISAH DARI MODAL PETUNJUK) ===== -->
+      <div id="tutorialModalHome" class="modal-tutorial hidden">
+        <div id="tutorialOverlayHome" class="modal-tutorial-overlay"></div>
 
-          <div class="modal-tutorial-box animate-pop">
-            <button id="tutorialCloseHome" class="modal-tutorial-close">
-              ✖
-            </button>
+        <div class="modal-tutorial-box animate-pop">
+          <button id="tutorialCloseHome" class="modal-tutorial-close">✖</button>
 
-            <div class="modal-tutorial-content">
-              <h2 class="modal-tutorial-title">
-                Tutorial Pengisian Template Excel
-              </h2>
-              <p class="modal-tutorial-desc">
-                Tonton video berikut untuk panduan mengisi template.
-              </p>
+          <div class="modal-tutorial-content">
+            <h2 class="modal-tutorial-title">
+              Tutorial Pengisian Template Excel
+            </h2>
+            <p class="modal-tutorial-desc">
+              Tonton video berikut untuk panduan mengisi template.
+            </p>
 
-              <div class="modal-video-wrapper">
-                <iframe
-                  id="tutorialVideoFrameHome"
-                  src="https://www.youtube.com/embed/WmuCe1ZaTqY"
-                  class="modal-video-iframe"
-                  allowfullscreen
-                ></iframe>
+            <div class="modal-video-wrapper">
+              <iframe
+                id="tutorialVideoFrameHome"
+                src="https://www.youtube.com/embed/WmuCe1ZaTqY"
+                class="modal-video-iframe"
+                allowfullscreen
+              ></iframe>
+            </div>
+
+            <div class="modal-tutorial-footer">
+              <div class="flex items-center gap-3">
+                <input
+                  id="dontShowAgainHome"
+                  type="checkbox"
+                  class="checkbox-tutorial"
+                />
+                <label for="dontShowAgainHome" class="checkbox-label">
+                  jangan tampilkan kembali
+                </label>
               </div>
 
-              <div class="modal-tutorial-footer">
-                <div class="flex items-center gap-3">
-                  <input
-                    id="dontShowAgainHome"
-                    type="checkbox"
-                    class="checkbox-tutorial"
-                  />
-                  <label for="dontShowAgainHome" class="checkbox-label">
-                    jangan tampilkan kembali
-                  </label>
-                </div>
-
-                <button id="tutorialContinueHome" class="btn-tutorial-continue">
-                  Lanjut
-                </button>
-              </div>
+              <button id="tutorialContinueHome" class="btn-tutorial-continue">
+                Lanjut
+              </button>
             </div>
           </div>
         </div>
