@@ -22,7 +22,7 @@
     <!-- Custom CSS -->
     <link
       rel="stylesheet"
-      href="{{ url_for('static', path='/css/style.css') }}"
+      href="{{ url_for('static', path='css/style.css') }}"
     />
   </head>
 
@@ -41,7 +41,7 @@
       </div>
 
       <div class="navbar-links">
-          <a href="/" class="navbar-link">Home</a>
+        <a href="/" class="navbar-link">Home</a>
       </div>
     </nav>
 
@@ -64,7 +64,9 @@
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script>
-      lucide.createIcons();
+      if (window.lucide && typeof lucide.createIcons === "function") {
+        lucide.createIcons();
+      }
     </script>
   </body>
 </html>

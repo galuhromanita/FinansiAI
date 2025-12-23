@@ -249,7 +249,9 @@
 
     <!-- MAIN JS -->
     <script>
-      lucide.createIcons();
+      if (window.lucide && typeof lucide.createIcons === "function") {
+        lucide.createIcons();
+      }
 
       const modal = document.getElementById("uploadModal");
       const triggerModalBtn = document.getElementById("triggerModalBtn");
@@ -306,7 +308,9 @@
         sendBtn.disabled = true;
         sendBtn.innerHTML =
           '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Mengunggah...';
-        lucide.createIcons();
+        if (window.lucide && typeof lucide.createIcons === "function") {
+          lucide.createIcons();
+        }
       });
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -391,7 +395,9 @@
         });
       })();
 
-      lucide.createIcons();
+      if (window.lucide && typeof lucide.createIcons === "function") {
+        lucide.createIcons();
+      }
       fileInput.addEventListener("change", () => {
         if (fileInput.files.length > 0) {
           sendBtn.disabled = false;
