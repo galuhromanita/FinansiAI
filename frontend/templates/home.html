@@ -329,8 +329,18 @@
         );
         const dontShow = document.getElementById("dontShowAgainHome");
         const downloadBtn = document.getElementById("downloadTemplateBtn");
+        const TUTORIAL_STORAGE_KEY = "tutorialHomeDontShow";
+
+        function isTutorialDisabled() {
+          try {
+            return localStorage.getItem(TUTORIAL_STORAGE_KEY) === "1";
+          } catch (e) {
+            return false;
+          }
+        }
 
         function openTutorial() {
+          if (isTutorialDisabled()) return;
           tutorialModal.classList.remove("hidden");
           tutorialModal.classList.add("flex");
           document.body.style.overflow = "hidden";
@@ -342,6 +352,16 @@
           document.body.style.overflow = "";
         }
 
+        function handleTutorialClose() {
+          try {
+            if (dontShow && dontShow.checked) {
+              localStorage.setItem(TUTORIAL_STORAGE_KEY, "1");
+            }
+          } catch (e) {}
+          closeTutorial();
+        }
+
+        // Tampilkan tutorial HANYA setelah pengguna klik "Unduh Template"
         downloadBtn.addEventListener("click", function (e) {
           e.preventDefault();
           const url = downloadBtn.href + "?v=" + Date.now();
@@ -359,7 +379,8 @@
               link.href = URL.createObjectURL(blob);
               link.download = filename;
               link.click();
-              // Setelah unduh template, selalu tampilkan tutorial
+
+              // Setelah unduh template, baru tampilkan tutorial (tidak saat page load)
               openTutorial();
             })
             .catch(() => {
@@ -367,17 +388,9 @@
             });
         });
 
-        tutorialClose.addEventListener("click", () => {
-          closeTutorial();
-        });
-
-        tutorialOverlay.addEventListener("click", () => {
-          closeTutorial();
-        });
-
-        tutorialContinue.addEventListener("click", () => {
-          closeTutorial();
-        });
+        tutorialClose.addEventListener("click", handleTutorialClose);
+        tutorialOverlay.addEventListener("click", handleTutorialClose);
+        tutorialContinue.addEventListener("click", handleTutorialClose);
       })();
 
       if (window.lucide && typeof lucide.createIcons === "function") {
