@@ -164,6 +164,35 @@
 }
 
 /* ============================================================
+   RESPONSIVE TWEAKS — MOBILE FIRST (≤ 640px)
+   ============================================================ */
+@media (max-width: 640px) {
+  .bg-shape-landing,
+  .bg-shape-landing > div {
+    width: 40rem;
+    height: 24rem;
+  }
+
+  .bg-shape-landing {
+    top: -55%;
+    filter: blur(32px);
+  }
+
+  .modal-box-landing {
+    max-width: 360px;
+    padding: 1.25rem;
+  }
+
+  .modal-title {
+    font-size: 1.1rem;
+  }
+
+  .modal-desc {
+    font-size: 0.8rem;
+  }
+}
+
+/* ============================================================
    1. BACKGROUND GRADIENT SHAPE
    (Pengganti inline clip-path + transform)
 ============================================================ */
