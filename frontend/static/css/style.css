@@ -97,6 +97,11 @@
   display: none !important;
 }
 
+/* Tombol trigger upload juga harus hilang total saat diberi class hidden */
+.btn-upload-trigger.hidden {
+  display: none !important;
+}
+
 .modal-overlay {
   position: absolute;
   inset: 0;

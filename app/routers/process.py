@@ -7,19 +7,22 @@ from app.services.ai_processing import analyze_data
 
 router = APIRouter()
 
+
 @router.get("/process", name="process_file")
 def process_file(request: Request):
     templates = request.app.state.templates
 
     filepath = request.session.get("uploaded_file")
     if not filepath:
-        return RedirectResponse("/", status_code=HTTP_303_SEE_OTHER)
+        # Jika tidak ada file, kembali ke dashboard dengan pesan error yang jelas
+        request.session["flash_error"] = "Silakan upload file Excel terlebih dahulu."
+        return RedirectResponse("/dashboard", status_code=HTTP_303_SEE_OTHER)
 
     try:
         print(f"📄 Parsing file: {filepath}")
         parsed = parse_excel(filepath)
         print(f"✅ Parsed data: {parsed}")
-        
+
         print(f"🤖 Analyzing data...")
         hasil = analyze_data(parsed)
         print(f"✅ Hasil analysis: {hasil}")
@@ -28,8 +31,19 @@ def process_file(request: Request):
         print(f"❌ ERROR: {str(e)}")
         import traceback
         traceback.print_exc()
-        request.session["error"] = str(e)
-        return RedirectResponse("/", status_code=HTTP_303_SEE_OTHER)
+
+        # Jika gagal karena struktur/header tidak sesuai template,
+        # tampilkan pesan konsisten seperti di router upload.
+        msg = str(e) or "Terjadi kesalahan saat memproses file."
+        if "Header transaksi tidak ditemukan" in msg:
+            request.session["flash_error"] = (
+                "File yang Anda unggah bukan template FINANSIAI"
+            )
+        else:
+            request.session["flash_error"] = msg
+
+        # Kembali ke dashboard supaya pengguna melihat pesan error di halaman upload
+        return RedirectResponse("/dashboard", status_code=HTTP_303_SEE_OTHER)
 
     print(f"💾 Saving hasil to session...")
     request.session["hasil"] = hasil

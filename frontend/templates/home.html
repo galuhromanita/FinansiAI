@@ -323,7 +323,6 @@
 
       // TUTORIAL LOGIC (HOME)
       (function () {
-        const KEY = "finansiai_hide_tutorial_v1";
         const tutorialModal = document.getElementById("tutorialModalHome");
         const tutorialOverlay = document.getElementById("tutorialOverlayHome");
         const tutorialClose = document.getElementById("tutorialCloseHome");
@@ -345,14 +344,6 @@
           document.body.style.overflow = "";
         }
 
-        function saveChoice() {
-          if (dontShow.checked) {
-            localStorage.setItem(KEY, "1");
-          } else {
-            localStorage.removeItem(KEY);
-          }
-        }
-
         downloadBtn.addEventListener("click", function (e) {
           e.preventDefault();
           const url = downloadBtn.href + "?v=" + Date.now();
@@ -370,9 +361,8 @@
               link.href = URL.createObjectURL(blob);
               link.download = filename;
               link.click();
-
-              const hide = localStorage.getItem(KEY) === "1";
-              if (!hide) openTutorial();
+              // Setelah unduh template, selalu tampilkan tutorial
+              openTutorial();
             })
             .catch(() => {
               showClientError("Gagal mengunduh template.");
@@ -380,17 +370,14 @@
         });
 
         tutorialClose.addEventListener("click", () => {
-          saveChoice();
           closeTutorial();
         });
 
         tutorialOverlay.addEventListener("click", () => {
-          saveChoice();
           closeTutorial();
         });
 
         tutorialContinue.addEventListener("click", () => {
-          saveChoice();
           closeTutorial();
         });
       })();
