@@ -106,12 +106,21 @@
     </script>
 
     <script>
-      // Landing page: langsung ke dashboard tanpa popup tutorial
+      // Landing page: saat klik "Get Started", tampilkan tutorial terlebih dulu
       document.addEventListener("DOMContentLoaded", function () {
+        const KEY = "finansiai_hide_tutorial_v1";
+        const getStarted = document.getElementById("getStartedBtn");
         const modal = document.getElementById("tutorialModal");
         const overlay = document.getElementById("tutorialOverlay");
         const closeBtn = document.getElementById("tutorialClose");
         const continueBtn = document.getElementById("tutorialContinue");
+        const checkbox = document.getElementById("dontShowAgain");
+
+        function showModal() {
+          modal.classList.remove("hidden");
+          modal.classList.add("flex");
+          document.body.style.overflow = "hidden";
+        }
 
         function hideModal() {
           modal.classList.add("hidden");
@@ -119,9 +128,24 @@
           document.body.style.overflow = "";
         }
 
+        // Klik Get Started: kalau user pernah pilih "jangan tampilkan kembali", langsung ke dashboard
+        getStarted.addEventListener("click", function (e) {
+          const hide = localStorage.getItem(KEY) === "1";
+          if (hide) {
+            // langsung ke dashboard tanpa modal
+            return;
+          }
+
+          e.preventDefault();
+          showModal();
+        });
+
         overlay.addEventListener("click", hideModal);
         closeBtn.addEventListener("click", hideModal);
-        continueBtn.addEventListener("click", hideModal);
+        continueBtn.addEventListener("click", function () {
+          if (checkbox.checked) localStorage.setItem(KEY, "1");
+          window.location.href = "/dashboard";
+        });
       });
     </script>
   </body>
