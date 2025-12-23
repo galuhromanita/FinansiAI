@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FinansiAI - Home</title>
 
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind (built CSS) -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/tw.css') }}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,7 +16,7 @@
       rel="stylesheet"
     />
 
-    <!-- Custom CSS -->
+    <!-- Custom CSS (overrides) -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', path='css/style.css') }}"

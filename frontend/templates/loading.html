@@ -10,8 +10,8 @@
       setTimeout(() => (window.location.href = "/process"), 1500);
     </script>
 
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind (built CSS) -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/tw.css') }}" />
 
     <!-- Fonts -->
     <link
@@ -19,7 +19,7 @@
       rel="stylesheet"
     />
 
-    <!-- Custom CSS -->
+    <!-- Custom CSS (overrides) -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', path='css/style.css') }}"

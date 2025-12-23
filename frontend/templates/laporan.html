@@ -5,8 +5,8 @@
 
     <title>FinansiAI - Laporan Keuangan Bulanan</title>
 
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind (built CSS) -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/tw.css') }}" />
 
     <!-- Fonts -->
     <link
@@ -20,7 +20,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
-    <!-- Custom CSS -->
+    <!-- Custom CSS (overrides) -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', path='css/style.css') }}"
