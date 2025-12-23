@@ -80,7 +80,7 @@
       </div>
 
       <div class="navbar-links">
-        <a href="/" class="navbar-link">Home</a>
+        <a href="{{ url_for('dashboard') }}" class="navbar-link">Home</a>
       </div>
     </nav>
 
@@ -192,50 +192,6 @@
           </div>
         </div>
       </div>
-
-      <!-- ===== TUTORIAL MODAL (TERPISAH DARI MODAL PETUNJUK) ===== -->
-      <div id="tutorialModalHome" class="modal-tutorial hidden">
-        <div id="tutorialOverlayHome" class="modal-tutorial-overlay"></div>
-
-        <div class="modal-tutorial-box animate-pop">
-          <button id="tutorialCloseHome" class="modal-tutorial-close">✖</button>
-
-          <div class="modal-tutorial-content">
-            <h2 class="modal-tutorial-title">
-              Tutorial Pengisian Template Excel
-            </h2>
-            <p class="modal-tutorial-desc">
-              Tonton video berikut untuk panduan mengisi template.
-            </p>
-
-            <div class="modal-video-wrapper">
-              <iframe
-                id="tutorialVideoFrameHome"
-                src="https://www.youtube.com/embed/WmuCe1ZaTqY"
-                class="modal-video-iframe"
-                allowfullscreen
-              ></iframe>
-            </div>
-
-            <div class="modal-tutorial-footer">
-              <div class="flex items-center gap-3">
-                <input
-                  id="dontShowAgainHome"
-                  type="checkbox"
-                  class="checkbox-tutorial"
-                />
-                <label for="dontShowAgainHome" class="checkbox-label">
-                  jangan tampilkan kembali
-                </label>
-              </div>
-
-              <button id="tutorialContinueHome" class="btn-tutorial-continue">
-                Lanjut
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </main>
 
     <!-- ========================================================= -->
@@ -318,80 +274,6 @@
           fileUploadSection.classList.remove("hidden");
         }
       });
-
-      // TUTORIAL LOGIC (HOME)
-      (function () {
-        const tutorialModal = document.getElementById("tutorialModalHome");
-        const tutorialOverlay = document.getElementById("tutorialOverlayHome");
-        const tutorialClose = document.getElementById("tutorialCloseHome");
-        const tutorialContinue = document.getElementById(
-          "tutorialContinueHome"
-        );
-        const dontShow = document.getElementById("dontShowAgainHome");
-        const downloadBtn = document.getElementById("downloadTemplateBtn");
-        const TUTORIAL_STORAGE_KEY = "tutorialHomeDontShow";
-
-        function isTutorialDisabled() {
-          try {
-            return localStorage.getItem(TUTORIAL_STORAGE_KEY) === "1";
-          } catch (e) {
-            return false;
-          }
-        }
-
-        function openTutorial() {
-          if (isTutorialDisabled()) return;
-          tutorialModal.classList.remove("hidden");
-          tutorialModal.classList.add("flex");
-          document.body.style.overflow = "hidden";
-        }
-
-        function closeTutorial() {
-          tutorialModal.classList.add("hidden");
-          tutorialModal.classList.remove("flex");
-          document.body.style.overflow = "";
-        }
-
-        function handleTutorialClose() {
-          try {
-            if (dontShow && dontShow.checked) {
-              localStorage.setItem(TUTORIAL_STORAGE_KEY, "1");
-            }
-          } catch (e) {}
-          closeTutorial();
-        }
-
-        // Tampilkan tutorial HANYA setelah pengguna klik "Unduh Template"
-        downloadBtn.addEventListener("click", function (e) {
-          e.preventDefault();
-          const url = downloadBtn.href + "?v=" + Date.now();
-
-          fetch(url)
-            .then((resp) => resp.blob().then((b) => ({ blob: b, resp })))
-            .then(({ blob, resp }) => {
-              const cd = resp.headers.get("content-disposition");
-              let filename = "Template.xlsx";
-              if (cd) {
-                const match = cd.match(/filename="?([^"]+)"?/);
-                if (match) filename = match[1];
-              }
-              const link = document.createElement("a");
-              link.href = URL.createObjectURL(blob);
-              link.download = filename;
-              link.click();
-
-              // Setelah unduh template, baru tampilkan tutorial (tidak saat page load)
-              openTutorial();
-            })
-            .catch(() => {
-              showClientError("Gagal mengunduh template.");
-            });
-        });
-
-        tutorialClose.addEventListener("click", handleTutorialClose);
-        tutorialOverlay.addEventListener("click", handleTutorialClose);
-        tutorialContinue.addEventListener("click", handleTutorialClose);
-      })();
 
       if (window.lucide && typeof lucide.createIcons === "function") {
         lucide.createIcons();
