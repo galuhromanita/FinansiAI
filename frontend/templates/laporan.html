@@ -64,13 +64,13 @@
           <p class="judul">LAPORAN KEUANGAN BULANAN</p>
 
           <p class="periode">
+            {% if hasil.used_model %}
             <span class="sumber-model">
               Sumber Analisis:
-              <span class="badge-model">
-                {{ hasil.used_model if hasil.used_model else 'unknown' }}
-              </span>
+              <span class="badge-model"> {{ hasil.used_model }} </span>
             </span>
-            Untuk Bulan "{{ hasil.Bulan }}" Tahun "{{ hasil.Tahun }}"
+            {% endif %} Untuk Bulan "{{ hasil.Bulan }}" Tahun "{{ hasil.Tahun
+            }}"
           </p>
         </div>
 
@@ -181,21 +181,19 @@
           '{{ {"Pendapatan": hasil.Pendapatan, "Pengeluaran": hasil.TotalBeban, "LabaBersih": hasil.LabaBersih} | tojson | safe }}'
         );
 
+        const labels = ["Pendapatan", "Pengeluaran", "Laba Bersih"];
+
         const data = [
           {
-            x: ["Pendapatan", "Pengeluaran", "Laba Bersih"],
+            x: labels,
             y: [summary.Pendapatan, summary.Pengeluaran, summary.LabaBersih],
             type: "bar",
             marker: {
               color: ["#445D48", "#D6CC99", "#001524"],
               line: { color: "#FDE5D4", width: 2 },
             },
-            text: [
-              "Rp " + summary.Pendapatan.toLocaleString("id-ID"),
-              "Rp " + summary.Pengeluaran.toLocaleString("id-ID"),
-              "Rp " + summary.LabaBersih.toLocaleString("id-ID"),
-            ],
-            textposition: "outside",
+            // Hanya tampilkan angka melalui tooltip (hover), bukan text di luar bar
+            hovertemplate: "%{x} Rp %{y:,.0f}<extra></extra>",
             opacity: 0.95,
           },
         ];
@@ -214,6 +212,7 @@
               automargin: true,
             },
             showlegend: false,
+            hovermode: "x",
             plot_bgcolor: "#ffffff",
             paper_bgcolor: "#ffffff",
           },

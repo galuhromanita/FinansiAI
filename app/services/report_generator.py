@@ -31,8 +31,8 @@ def generate_pdf(hasil, output_path):
             name="HeaderTitle",
             alignment=TA_CENTER,
             fontName="Helvetica-Bold",
-            fontSize=12,
-            leading=14,
+            fontSize=16,
+            leading=18,
         )
     )
     styles.add(
@@ -40,16 +40,16 @@ def generate_pdf(hasil, output_path):
             name="HeaderSubtitle",
             alignment=TA_CENTER,
             fontName="Helvetica",
-            fontSize=10,
-            leading=12,
+            fontSize=12,
+            leading=14,
         )
     )
     styles.add(
         ParagraphStyle(
-            name="ItalicSmall",
-            alignment=TA_LEFT,
+            name="ItalicSmallCentered",
+            alignment=TA_CENTER,
             fontName="Helvetica-Oblique",
-            fontSize=8,
+            fontSize=10,
         )
     )
 
@@ -99,7 +99,8 @@ def generate_pdf(hasil, output_path):
 
     # Lebar total = 210mm (A5 landscape), dikonversi ke point (1mm ≈ 2.8346pt)
     # Jadi sekitar 595pt total; kita sisakan margin
-    table = Table(data, colWidths=[170, 190, 100])
+    # Sedikit perlebar font dan kolom agar mirip tampilan di laporan.html
+    table = Table(data, colWidths=[190, 190, 120])
     table.setStyle(
         TableStyle(
             [
@@ -109,9 +110,9 @@ def generate_pdf(hasil, output_path):
                 ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
                 ("ALIGN", (0, 1), (1, -1), "LEFT"),
                 ("ALIGN", (2, 1), (2, -1), "RIGHT"),
-                ("FONTSIZE", (0, 0), (-1, -1), 9.5),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-                ("TOPPADDING", (0, 0), (-1, -1), 2),
+                ("FONTSIZE", (0, 0), (-1, -1), 11),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ("TOPPADDING", (0, 0), (-1, -1), 3),
 
                 # Warna highlight laba bersih
                 ("BACKGROUND", (0, 9), (-1, 9), colors.lightgrey),
@@ -124,8 +125,9 @@ def generate_pdf(hasil, output_path):
     elements.append(table)
     elements.append(Spacer(1, 6))
 
-    # ===== FOOTER =====
-    elements.append(Paragraph("Laporan otomatis oleh FinansiAI", styles["ItalicSmall"]))
+    # ===== FOOTER ===== (ditengah)
+    elements.append(Spacer(1, 10))
+    elements.append(Paragraph("Laporan otomatis oleh FinansiAI", styles["ItalicSmallCentered"]))
 
     # ===== BUILD PDF =====
     doc.build(elements)
