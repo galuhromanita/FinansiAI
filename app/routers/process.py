@@ -19,35 +19,31 @@ def process_file(request: Request):
         return RedirectResponse("/dashboard", status_code=HTTP_303_SEE_OTHER)
 
     try:
-        print(f"📄 Parsing file: {filepath}")
+        print(f"Parsing file: {filepath}")
         parsed = parse_excel(filepath)
-        print(f"✅ Parsed data: {parsed}")
+        print(f"Berhasil Parsed data: {parsed}")
 
-        print(f"🤖 Analyzing data...")
+        print(f" Menganalisis data...")
         hasil = analyze_data(parsed)
-        print(f"✅ Hasil analysis: {hasil}")
+        print(f"Berhasil menganalisis data: {hasil}")
 
     except Exception as e:
-        print(f"❌ ERROR: {str(e)}")
+        print(f"ERROR: {str(e)}")
         import traceback
         traceback.print_exc()
 
-        # Jika gagal karena struktur/header tidak sesuai template,
-        # tampilkan pesan konsisten seperti di router upload.
-        msg = str(e) or "Terjadi kesalahan saat memproses file."
-        if "Header transaksi tidak ditemukan" in msg:
-            request.session["flash_error"] = (
-                "File yang Anda unggah bukan template FINANSIAI"
-            )
-        else:
-            request.session["flash_error"] = msg
+        # Untuk pengalaman pengguna yang konsisten,
+        # anggap semua error di tahap proses sebagai template yang tidak sesuai.
+        request.session["flash_error"] = (
+            "File yang Anda unggah bukan template FINANSIAI"
+        )
 
         # Kembali ke dashboard supaya pengguna melihat pesan error di halaman upload
         return RedirectResponse("/dashboard", status_code=HTTP_303_SEE_OTHER)
 
-    print(f"💾 Saving hasil to session...")
+    print(f" Saving hasil to session...")
     request.session["hasil"] = hasil
-    print(f"✅ Redirecting to /laporan")
+    print(f" Redirecting to /laporan")
     return RedirectResponse("/laporan", status_code=HTTP_303_SEE_OTHER)
 
 

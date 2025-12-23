@@ -112,6 +112,10 @@
   max-width: 720px;
   background: white;
   border-radius: 1rem;
+
+  .modal-tutorial.hidden {
+    display: none !important;
+  }
   position: relative;
   overflow: hidden;
 }
@@ -577,7 +581,7 @@
   position: fixed;
   inset: 0;
   z-index: 100;
-  display: none;
+  display: flex;
   justify-content: center;
   align-items: flex-start; /* ⬅ turunkan modal */
   padding-top: 90px; /* ⬅ beri jarak dari navbar */
