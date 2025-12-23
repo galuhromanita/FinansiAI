@@ -10,7 +10,8 @@ def laporan(request: Request):
 
     hasil = request.session.get("hasil")
     if not hasil:
-        return RedirectResponse("/upload")
+        # Jika tidak ada data hasil di session, kembalikan ke halaman upload (dashboard)
+        return RedirectResponse("/dashboard")
 
     return templates.TemplateResponse(
         "laporan.html",
