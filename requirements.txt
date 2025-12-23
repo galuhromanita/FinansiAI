@@ -7,3 +7,4 @@ google-generativeai
 reportlab
 jinja2
 python-multipart
+itsdangerous
