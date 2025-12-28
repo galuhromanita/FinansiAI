@@ -1,42 +1,3 @@
-import google.generativeai as genai
-import os
-from dotenv import load_dotenv
-import json
-import re
-
-load_dotenv()
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-
-
-def get_text(response):
-    """Fallback aman untuk mengambil teks dari response Gemini."""
-    # 1) coba direct
-    try:
-        if response.text:
-            return response.text
-    except:
-        pass
-
-    # 2) coba lewat parts
-    try:
-        parts = response.candidates[0].content.parts
-        if parts:
-            p = parts[0]
-            if hasattr(p, "text"):
-                return p.text
-    except:
-        pass
-
-    return ""
-
-
-def extract_json(text):
-    match = re.search(r"\{[\s\S]*\}", text)
-    if not match:
-        raise ValueError("Tidak ada JSON dalam output.")
-    return json.loads(match.group(0))
-
-
 def analyze_data(parsed_excel: dict):
 
     meta = parsed_excel.get("meta", {})
@@ -106,7 +67,7 @@ def analyze_data(parsed_excel: dict):
     laba_bersih = pendapatan - total_beban
 
     # =========================
-    # HASIL FINAL
+    # HASIL FINAL (MURNI PERHITUNGAN MANUAL)
     # =========================
     hasil_final = {
         "NamaUsaha": meta.get("NamaUsaha", "Tidak Diketahui"),
@@ -119,7 +80,8 @@ def analyze_data(parsed_excel: dict):
         "TotalBeban": total_beban,
         "LabaBersih": laba_bersih,
         "Warnings": warnings,
-        "InsightAI": None   # sengaja null, tidak pakai AI
+        # Tidak menggunakan Gemini API; insight dihasilkan manual dari angka
+        "InsightAI": "Angka laporan ini dihitung otomatis dari data transaksi yang Anda unggah tanpa bantuan model AI eksternal.",
     }
 
     return hasil_final

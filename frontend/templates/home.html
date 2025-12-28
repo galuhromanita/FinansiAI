@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FinansiAI - Home</title>
 
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/png"
+      href="{{ url_for('static', path='img/logo.png') }}"
+    />
+
     <!-- Tailwind (built CSS) -->
     <link rel="stylesheet" href="{{ url_for('static', path='css/tw.css') }}" />
 
@@ -34,6 +41,14 @@
     {% if error %}
     <div id="errorModal" class="modal-error-bg animate-fade">
       <div class="modal-error-box animate-pop">
+        <button
+          type="button"
+          class="modal-close-btn"
+          onclick="document.getElementById('errorModal').remove()"
+        >
+          ✖
+        </button>
+
         <div class="modal-error-header text-red-600 flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +71,7 @@
 
         <button
           onclick="document.getElementById('errorModal').remove()"
-          class="btn-error-close"
+          class="btn-error-close mt-4"
         >
           Tutup
         </button>
@@ -190,6 +205,49 @@
               Sudah Unduh, Lanjut
             </button>
           </div>
+        </div>
+      </div>
+
+      <!-- =============================== -->
+      <!-- CLIENT-SIDE ERROR MODAL -->
+      <!-- =============================== -->
+      <div id="clientErrorModal" class="modal-error-bg animate-fade hidden">
+        <div class="modal-error-box animate-pop">
+          <button
+            type="button"
+            id="closeClientErrorBtn"
+            class="modal-close-btn"
+          >
+            ✖
+          </button>
+
+          <div class="modal-error-header text-red-600 flex items-center gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-10 h-10"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            <h2 class="modal-error-title">Terjadi Kesalahan</h2>
+          </div>
+
+          <p id="clientErrorMessage" class="modal-error-message"></p>
+
+          <button
+            type="button"
+            class="btn-error-close mt-4"
+            onclick="document.getElementById('clientErrorModal').classList.add('hidden')"
+          >
+            Tutup
+          </button>
         </div>
       </div>
     </main>

@@ -402,6 +402,20 @@
   text-align: center;
   border: 2px solid #ff7a7a;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.modal-error-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  font-size: 1.1rem;
+  color: #9ca3af; /* abu-abu */
+  cursor: pointer;
+}
+
+.modal-error-close:hover {
+  color: #4b5563; /* abu-abu lebih gelap */
 }
 
 .modal-error-header {
