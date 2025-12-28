@@ -20,7 +20,7 @@ async def upload_file(request: Request, file: UploadFile = File(None)):
     # ======================================================
     if file is None:
         request.session["flash_error"] = "Silakan pilih file terlebih dahulu."
-        return RedirectResponse("/", status_code=HTTP_303_SEE_OTHER)
+        return RedirectResponse("/dashboard", status_code=HTTP_303_SEE_OTHER)
 
     filename = os.path.basename(file.filename)
 
@@ -62,15 +62,26 @@ async def upload_file(request: Request, file: UploadFile = File(None)):
         return RedirectResponse("/dashboard", status_code=HTTP_303_SEE_OTHER)
 
     # Cek apakah ada baris header yang memuat kata kunci template
-    found_header = False
-    for row in df.values.tolist():
+    header_row_index = None
+    for idx, row in enumerate(df.values.tolist()):
         row_str = "".join([str(x).lower() for x in row])
         if "tanggal" in row_str and "jumlah" in row_str:
-            found_header = True
+            header_row_index = idx
             break
 
-    if not found_header:
+    if header_row_index is None:
         request.session["flash_error"] = "File yang Anda unggah bukan template FINANSIAI"
+        return RedirectResponse("/dashboard", status_code=HTTP_303_SEE_OTHER)
+
+    # Setelah header ditemukan, cek apakah masih ada data transaksi di bawahnya
+    data_df = df.iloc[header_row_index + 1 :].copy()
+    # Anggap sel berisi hanya spasi sebagai kosong
+    data_df = data_df.replace(r"^\s*$", pd.NA, regex=True)
+
+    if data_df.dropna(how="all").empty:
+        request.session["flash_error"] = (
+            "File input tidak mengandung data transaksi sehingga proses analisis tidak dapat dilanjutkan."
+        )
         return RedirectResponse("/dashboard", status_code=HTTP_303_SEE_OTHER)
 
     # ======================================================

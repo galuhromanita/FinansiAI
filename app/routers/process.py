@@ -31,12 +31,18 @@ def process_file(request: Request):
         print(f"ERROR: {str(e)}")
         import traceback
         traceback.print_exc()
-
-        # Untuk pengalaman pengguna yang konsisten,
-        # anggap semua error di tahap proses sebagai template yang tidak sesuai.
-        request.session["flash_error"] = (
-            "File yang Anda unggah bukan template FINANSIAI"
-        )
+        
+        # Bedakan antara file tanpa data transaksi dan error lain (template salah, dsb.)
+        if "NO_DATA_TRANSAKSI" in str(e):
+            request.session["flash_error"] = (
+                "File input tidak mengandung data transaksi sehingga proses analisis tidak dapat dilanjutkan."
+            )
+        else:
+            # Untuk pengalaman pengguna yang konsisten,
+            # anggap error lain di tahap proses sebagai template yang tidak sesuai.
+            request.session["flash_error"] = (
+                "File yang Anda unggah bukan template FINANSIAI"
+            )
 
         # Kembali ke dashboard supaya pengguna melihat pesan error di halaman upload
         return RedirectResponse("/dashboard", status_code=HTTP_303_SEE_OTHER)

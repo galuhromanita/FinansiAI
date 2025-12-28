@@ -94,6 +94,14 @@ def parse_excel(filepath):
     keep_cols = ["Tanggal", "Jenis Transaksi", "Keterangan", "Jumlah"]
     df = df[[c for c in keep_cols if c in df.columns]]
 
+    # 5.5) CEK APAKAH ADA DATA TRANSAKSI SETELAH HEADER
+    # Anggap sel berisi hanya spasi sebagai kosong
+    df = df.replace(r"^\s*$", pd.NA, regex=True)
+
+    # Jika semua baris kosong (tidak ada transaksi), hentikan proses dengan error khusus
+    if df.dropna(how="all").empty:
+        raise ValueError("NO_DATA_TRANSAKSI")
+
     # 6) BERSIHKAN FORMAT UANG
     if "Tanggal" in df.columns:
         df["Tanggal"] = df["Tanggal"].astype(str)

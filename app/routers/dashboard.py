@@ -17,7 +17,8 @@ def dashboard(request: Request):
         "home.html",
         {
             "request": request,
-            "show_upload": False,
+            # Jika ada error, langsung tampilkan section upload + tombol "Proses File"
+            "show_upload": True if error else False,
             "error": error
         }
     )

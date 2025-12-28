@@ -40,48 +40,74 @@ def extract_json(text):
 def analyze_data(parsed_excel: dict):
 
     meta = parsed_excel.get("meta", {})
-
     raw = parsed_excel["raw_rows"]
     cols = parsed_excel["columns"]
 
-    structured_rows = []
     modal = 0
     pendapatan = 0
     beban_usaha = 0
     beban_lain = 0
     warnings = []
 
-    # 1️⃣ BENTUK DATA TERSTRUKTUR
+    # =========================
+    # BENTUK DATA TERSTRUKTUR
+    # =========================
+    structured_rows = []
     for row in raw:
         try:
-            data = {
+            structured_rows.append({
                 "Tanggal": row[cols.index("Tanggal")],
-                "Jenis Transaksi": row[cols.index("Jenis Transaksi")],
+                "Jenis Transaksi": str(row[cols.index("Jenis Transaksi")]).lower().strip(),
                 "Keterangan": str(row[cols.index("Keterangan")]).lower(),
                 "Jumlah": float(row[cols.index("Jumlah")])
-            }
-            structured_rows.append(data)
-        except Exception as e:
+            })
+        except Exception:
             warnings.append(f"Baris tidak valid: {row}")
-            continue
 
-    # 2️⃣ HITUNG MANUAL (TANPA AI)
+    # =========================
+    # HITUNG SESUAI 3 JENIS TRANSAKSI
+    # =========================
     for r in structured_rows:
+        jenis = r["Jenis Transaksi"]
         ket = r["Keterangan"]
         jumlah = r["Jumlah"]
 
-        if "modal" in ket:
+        # -------- MODAL --------
+        if jenis == "modal":
             modal += jumlah
-        elif "penjualan" in ket or "pendapatan" in ket:
-            pendapatan += jumlah
-        elif "bahan" in ket or "alat" in ket or "gaji" in ket:
-            beban_usaha += jumlah
+
+        # -------- UANG MASUK --------
+        elif jenis == "uang masuk":
+
+            # Jika seharusnya modal (pinjaman / setoran)
+            if any(x in ket for x in ["pinjaman", "kredit", "bank", "modal"]):
+                modal += jumlah
+                warnings.append(
+                    f"'{ket}' dikoreksi dari Uang Masuk menjadi MODAL."
+                )
+            else:
+                pendapatan += jumlah
+
+        # -------- UANG KELUAR --------
+        elif jenis == "uang keluar":
+
+            if any(x in ket for x in ["bahan", "alat", "gaji", "listrik", "air", "sewa"]):
+                beban_usaha += jumlah
+            else:
+                beban_lain += jumlah
+
+        # -------- JENIS TIDAK VALID --------
         else:
-            beban_lain += jumlah
+            warnings.append(
+                f"Jenis transaksi tidak dikenali: '{jenis}'"
+            )
 
     total_beban = beban_usaha + beban_lain
     laba_bersih = pendapatan - total_beban
 
+    # =========================
+    # HASIL FINAL
+    # =========================
     hasil_final = {
         "NamaUsaha": meta.get("NamaUsaha", "Tidak Diketahui"),
         "Bulan": meta.get("Bulan", ""),
@@ -92,34 +118,8 @@ def analyze_data(parsed_excel: dict):
         "BebanLain": beban_lain,
         "TotalBeban": total_beban,
         "LabaBersih": laba_bersih,
-        "Warnings": warnings
+        "Warnings": warnings,
+        "InsightAI": None   # sengaja null, tidak pakai AI
     }
-
-    # 3️⃣ AI HANYA UNTUK NARASI (OPTIONAL)
-    prompt = f"""
-Berikut adalah laporan keuangan UMKM dalam format JSON:
-
-{json.dumps(hasil_final, indent=2)}
-
-Tugas Anda:
-- Jelaskan kondisi keuangan usaha secara singkat
-- Berikan insight
-- Peringatkan jika laba bersih negatif
-
-Jawab dalam 1 paragraf singkat, TANPA JSON.
-"""
-
-    # 4️⃣ Panggil Gemini hanya untuk insight naratif (dengan fallback jika gagal)
-    try:
-        model = genai.GenerativeModel("gemini-pro")
-        response = model.generate_content(prompt)
-        insight = get_text(response).strip()
-        if not insight:
-            raise ValueError("AI mengembalikan teks kosong")
-    except Exception as e:
-        print(f"AI insight error: {e}")
-        insight = "Analisis otomatis tidak tersedia untuk saat ini, namun angka laporan keuangan sudah dihitung dari data Anda."
-
-    hasil_final["InsightAI"] = insight
 
     return hasil_final
