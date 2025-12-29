@@ -169,13 +169,17 @@
 @media (max-width: 640px) {
   .bg-shape-landing,
   .bg-shape-landing > div {
-    width: 40rem;
-    height: 24rem;
+    width: 100vw;
+    height: 55vh;
   }
 
   .bg-shape-landing {
-    top: -55%;
-    filter: blur(32px);
+    top: -15%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    transform: none;
+    filter: blur(28px);
   }
 
   .modal-box-landing {
