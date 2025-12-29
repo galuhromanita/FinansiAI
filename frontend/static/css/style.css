@@ -1007,6 +1007,70 @@
   background: #001524;
 }
 
+/* ============================================================
+   RESPONSIVE — LAPORAN PAGE (MOBILE & TABLET)
+   Membuat layout laporan berbeda (stack/1 kolom) saat layar kecil
+   sehingga tidak meniru layout 2 kolom versi desktop.
+============================================================ */
+@media (max-width: 768px) {
+  .page-report {
+    padding-top: 72px;
+    padding-bottom: 24px;
+  }
+
+  .report-bg-shape {
+    top: -140px;
+    width: 520px;
+    height: 330px;
+    filter: blur(40px);
+    opacity: 0.3;
+  }
+
+  .report-container {
+    flex-direction: column;
+    margin-top: 40px;
+    gap: 1.5rem;
+  }
+
+  .chart-card {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .chart-container {
+    height: 260px;
+  }
+
+  .report-sheet {
+    width: 100%;
+    padding: 18px 16px 22px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  .report-header {
+    padding: 10px;
+    margin-bottom: 14px;
+  }
+
+  .judul {
+    font-size: 16px;
+  }
+
+  .report-table {
+    font-size: 12px;
+  }
+
+  .col-mid {
+    padding-left: 12px;
+  }
+
+  .export-btn {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+  }
+}
+
 /* button proses file not allowed */
 .btn-upload-submit:disabled {
   opacity: 0.5 !important;
