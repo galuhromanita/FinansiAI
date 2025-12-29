@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, BackgroundTasks
 from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_303_SEE_OTHER
 
@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 @router.get("/process", name="process_file")
-def process_file(request: Request):
+def process_file(request: Request, background_tasks: BackgroundTasks):
     templates = request.app.state.templates
 
     filepath = request.session.get("uploaded_file")
@@ -47,8 +47,17 @@ def process_file(request: Request):
         # Kembali ke dashboard supaya pengguna melihat pesan error di halaman upload
         return RedirectResponse("/dashboard", status_code=HTTP_303_SEE_OTHER)
 
+    # Jika proses berhasil, simpan hasil dan jadwalkan penghapusan file upload
     print(f" Saving hasil to session...")
     request.session["hasil"] = hasil
+
+    # Hapus file Excel yang sudah diproses agar folder uploads tidak menumpuk
+    uploaded_path = request.session.pop("uploaded_file", None)
+    if uploaded_path:
+        import os
+        if os.path.exists(uploaded_path):
+            background_tasks.add_task(os.remove, uploaded_path)
+
     print(f" Redirecting to /laporan")
     return RedirectResponse("/laporan", status_code=HTTP_303_SEE_OTHER)
 
