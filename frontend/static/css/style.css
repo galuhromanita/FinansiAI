@@ -1012,7 +1012,7 @@
    Membuat layout laporan berbeda (stack/1 kolom) saat layar kecil
    sehingga tidak meniru layout 2 kolom versi desktop.
 ============================================================ */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .page-report {
     padding-top: 72px;
     padding-bottom: 24px;
@@ -1027,7 +1027,7 @@
   }
 
   .report-container {
-    flex-direction: column;
+    display: block;
     margin-top: 40px;
     gap: 1.5rem;
   }
