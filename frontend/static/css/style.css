@@ -890,24 +890,18 @@
   );
 }
 
-/* Container */
+/* Container - DEFAULT (mobile / tablet: 2 baris, stack) */
 .report-container {
   max-width: 1200px;
   margin-inline: auto;
   padding-inline: 1rem;
-  margin-top: 60px;
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
+  margin-top: 40px;
+  display: block;
 }
 
 .chart-card {
-  flex: 1;
-  margin-top: 35px; /* supaya chart turun dan judul terlihat */
-}
-
-.report-sheet {
-  flex: 1;
+  width: 100%;
+  margin-top: 0;
 }
 
 /* Chart card */
@@ -922,7 +916,7 @@
   background: #ffffff;
   border: 1px solid #ccc;
   padding: 25px 35px 30px;
-  margin-inline: auto;
+  margin: 24px auto 0;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
@@ -1012,7 +1006,7 @@
    Membuat layout laporan berbeda (stack/1 kolom) saat layar kecil
    sehingga tidak meniru layout 2 kolom versi desktop.
 ============================================================ */
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .page-report {
     padding-top: 72px;
     padding-bottom: 24px;
@@ -1024,17 +1018,6 @@
     height: 330px;
     filter: blur(40px);
     opacity: 0.3;
-  }
-
-  .report-container {
-    display: block;
-    margin-top: 40px;
-    gap: 1.5rem;
-  }
-
-  .chart-card {
-    width: 100%;
-    margin-top: 0;
   }
 
   .chart-container {
@@ -1068,6 +1051,35 @@
     margin-top: 16px;
     display: flex;
     justify-content: center;
+  }
+}
+
+/* DESKTOP (≥ 1024px) - 2 kolom: chart kiri, laporan kanan */
+@media (min-width: 1024px) {
+  .page-report {
+    padding-top: 80px;
+    padding-bottom: 40px;
+  }
+
+  .report-container {
+    display: flex;
+    gap: 2rem;
+    margin-top: 60px;
+    align-items: flex-start;
+  }
+
+  .chart-card {
+    flex: 1;
+    margin-top: 35px; /* supaya chart turun dan judul terlihat */
+  }
+
+  .report-sheet {
+    flex: 1;
+    margin-top: 0;
+  }
+
+  .chart-container {
+    height: 380px;
   }
 }
 

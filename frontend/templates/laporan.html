@@ -218,12 +218,19 @@
               rangemode: "tozero", // agar tidak muncul nilai minus
               automargin: true,
             },
+            dragmode: false, // cegah drag/zoom tapi tetap bisa hover
             showlegend: false,
             hovermode: "x",
             plot_bgcolor: "#ffffff",
             paper_bgcolor: "#ffffff",
           },
-          { displayModeBar: false, staticPlot: true }
+          {
+            displayModeBar: false,
+            scrollZoom: false,
+            staticPlot: false,
+            doubleClick: false,
+            responsive: true,
+          }
         );
       })();
     </script>
