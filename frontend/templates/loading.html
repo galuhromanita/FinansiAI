@@ -5,28 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FinansiAI - Loading</title>
 
-    <!-- Favicon -->
+    <!-- favicon -->
     <link
       rel="icon"
       type="image/png"
       href="{{ url_for('static', path='img/logo.png') }}"
     />
 
-    <!-- Auto Redirect -->
     <script>
       setTimeout(() => (window.location.href = "/process"), 1500);
     </script>
 
-    <!-- Tailwind (built CSS) -->
     <link rel="stylesheet" href="{{ url_for('static', path='css/tw.css') }}" />
 
-    <!-- Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
 
-    <!-- Custom CSS (overrides) -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', path='css/style.css') }}"
@@ -34,7 +30,7 @@
   </head>
 
   <body class="bg-white h-screen overflow-hidden font-[Inter]">
-    <!-- NAVBAR -->
+    <!-- navbar -->
     <nav class="navbar-main">
       <div class="navbar-left">
         <img
@@ -52,10 +48,8 @@
       </div>
     </nav>
 
-    <!-- BACKGROUND -->
     <div aria-hidden="true" class="bg-shape-loading"></div>
 
-    <!-- LOADING SECTION -->
     <main class="loading-wrapper">
       <div class="loading-spinner"></div>
 
@@ -68,7 +62,6 @@
       </p>
     </main>
 
-    <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script>
       if (window.lucide && typeof lucide.createIcons === "function") {

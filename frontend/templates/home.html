@@ -5,17 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FinansiAI - Home</title>
 
-    <!-- Favicon -->
+    <!-- favicon -->
     <link
       rel="icon"
       type="image/png"
       href="{{ url_for('static', path='img/logo.png') }}"
     />
 
-    <!-- Tailwind (built CSS) -->
     <link rel="stylesheet" href="{{ url_for('static', path='css/tw.css') }}" />
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -23,7 +21,6 @@
       rel="stylesheet"
     />
 
-    <!-- Custom CSS (overrides) -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', path='css/style.css') }}"
@@ -34,10 +31,7 @@
     class="bg-white h-screen overflow-hidden font-[Inter]"
     data-show-upload="{{ 1 if show_upload|default(false) else 0 }}"
   >
-    <!-- ============================================ -->
-    <!-- FLASH MESSAGE HANDLING -->
-    <!-- ============================================ -->
-
+    <!-- error handling -->
     {% if error %}
     <div id="errorModal" class="modal-error-bg animate-fade">
       <div class="modal-error-box animate-pop">
@@ -79,9 +73,7 @@
     </div>
     {% endif %}
 
-    <!-- ===================== -->
-    <!-- TOP NAVBAR -->
-    <!-- ===================== -->
+    <!-- navbar -->
     <nav class="navbar-main">
       <div class="navbar-left">
         <img
@@ -99,12 +91,8 @@
       </div>
     </nav>
 
-    <!-- BACKGROUND -->
     <div aria-hidden="true" class="bg-shape-home"></div>
 
-    <!-- ======================== -->
-    <!-- MAIN CONTENT -->
-    <!-- ======================== -->
     <main class="home-content-wrapper">
       <h1 class="home-title">
         Buat Laporan dengan <span class="text-[#445D48]">Finansi</span
@@ -116,9 +104,7 @@
         dengan cepat
       </p>
 
-      <!-- =============================== -->
-      <!-- UPLOAD FORM -->
-      <!-- =============================== -->
+      <!-- upload form -->
       <form
         id="uploadForm"
         action="/upload"
@@ -126,13 +112,12 @@
         enctype="multipart/form-data"
         class="space-y-5"
       >
-        <!-- Trigger Modal -->
         <button id="triggerModalBtn" type="button" class="btn-upload-trigger">
           <i data-lucide="folder-up" class="w-6 h-6"></i>
           <span>Upload File</span>
         </button>
 
-        <!-- Upload Section -->
+        <!-- upload section -->
         <div id="fileUploadSection" class="hidden space-y-4">
           <div class="flex gap-3 items-start">
             <!-- Hidden Input -->
@@ -144,7 +129,6 @@
               class="hidden"
             />
 
-            <!-- Filename Display -->
             <span
               id="fileName"
               class="flex-1 px-6 py-3 border rounded-lg text-gray-500 text-sm"
@@ -152,7 +136,6 @@
               Belum ada file yang dipilih
             </span>
 
-            <!-- Right Column Buttons -->
             <div class="flex flex-col gap-3 w-[170px]">
               <button
                 type="button"
@@ -177,9 +160,7 @@
         </div>
       </form>
 
-      <!-- =============================== -->
-      <!-- MODAL PETUNJUK FILE -->
-      <!-- =============================== -->
+      <!-- pop up unduh template excel -->
       <div id="uploadModal" class="modal-upload hidden">
         <div class="modal-upload-box animate-pop">
           <button id="closeModalBtn" class="modal-upload-close">✖</button>
@@ -208,9 +189,7 @@
         </div>
       </div>
 
-      <!-- =============================== -->
-      <!-- CLIENT-SIDE ERROR MODAL -->
-      <!-- =============================== -->
+      <!-- error handling -->
       <div id="clientErrorModal" class="modal-error-bg animate-fade hidden">
         <div class="modal-error-box animate-pop">
           <button
@@ -252,14 +231,9 @@
       </div>
     </main>
 
-    <!-- ========================================================= -->
-    <!-- JAVASCRIPT -->
-    <!-- ========================================================= -->
-
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
-    <!-- MAIN JS -->
+    <!-- js-->
     <script>
       if (window.lucide && typeof lucide.createIcons === "function") {
         lucide.createIcons();
@@ -344,7 +318,6 @@
         }
       });
 
-      // CHOOSE FILE BUTTON LOGIC
       const chooseFileBtn = document.getElementById("chooseFileBtn");
       const fileName = document.getElementById("fileName");
 

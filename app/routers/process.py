@@ -14,7 +14,7 @@ def process_file(request: Request, background_tasks: BackgroundTasks):
 
     filepath = request.session.get("uploaded_file")
     if not filepath:
-        # Jika tidak ada file, kembali ke dashboard dengan pesan error yang jelas
+        # jika tidak ada file, kembali ke dashboard dengan pesan error yang jelas
         request.session["flash_error"] = "Silakan upload file Excel terlebih dahulu."
         return RedirectResponse("/dashboard", status_code=HTTP_303_SEE_OTHER)
 
@@ -32,26 +32,25 @@ def process_file(request: Request, background_tasks: BackgroundTasks):
         import traceback
         traceback.print_exc()
         
-        # Bedakan antara file tanpa data transaksi dan error lain (template salah, dsb.)
+        # bedakan antara file tanpa data transaksi dan error lain (template salah, dsb.)
         if "NO_DATA_TRANSAKSI" in str(e):
             request.session["flash_error"] = (
-                "File input tidak mengandung data transaksi sehingga proses analisis tidak dapat dilanjutkan."
+                "File yang anda unggah masih kosong sehingga proses analisis tidak dapat dilanjutkan."
             )
         else:
-            # Untuk pengalaman pengguna yang konsisten,
-            # anggap error lain di tahap proses sebagai template yang tidak sesuai.
+            
             request.session["flash_error"] = (
                 "File yang Anda unggah bukan template FINANSIAI"
             )
 
-        # Kembali ke dashboard supaya pengguna melihat pesan error di halaman upload
+        # kembali ke dashboard supaya pengguna melihat pesan error di halaman upload
         return RedirectResponse("/dashboard", status_code=HTTP_303_SEE_OTHER)
 
-    # Jika proses berhasil, simpan hasil dan jadwalkan penghapusan file upload
-    print(f" Saving hasil to session...")
+    # jika proses berhasil, simpan hasil dan jadwalkan penghapusan file upload
+    print(f" saving hasil to session...")
     request.session["hasil"] = hasil
 
-    # Hapus file Excel yang sudah diproses agar folder uploads tidak menumpuk
+    # hapus file Excel yang sudah diproses agar folder uploads tidak menumpuk
     uploaded_path = request.session.pop("uploaded_file", None)
     if uploaded_path:
         import os
@@ -62,7 +61,3 @@ def process_file(request: Request, background_tasks: BackgroundTasks):
     return RedirectResponse("/laporan", status_code=HTTP_303_SEE_OTHER)
 
 
-# result = analyze_data(parse_excel)
-# print("===== AI RESULT =====")
-# print(result)
-# print("=====================")

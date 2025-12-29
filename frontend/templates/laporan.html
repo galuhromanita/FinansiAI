@@ -6,29 +6,24 @@
 
     <title>FinansiAI - Laporan Keuangan Bulanan</title>
 
-    <!-- Favicon -->
+    <!-- favicon -->
     <link
       rel="icon"
       type="image/png"
       href="{{ url_for('static', path='img/logo.png') }}"
     />
 
-    <!-- Tailwind (built CSS) -->
     <link rel="stylesheet" href="{{ url_for('static', path='css/tw.css') }}" />
 
-    <!-- Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
 
-    <!-- Plotly -->
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
-    <!-- Custom CSS (overrides) -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', path='css/style.css') }}"
@@ -36,10 +31,9 @@
   </head>
 
   <body class="page-report">
-    <!-- BACKGROUND SHAPE -->
     <div class="report-bg-shape"></div>
 
-    <!-- NAVBAR -->
+    <!-- navbar -->
     <nav class="navbar-main">
       <div class="navbar-left">
         <img
@@ -57,15 +51,14 @@
       </div>
     </nav>
 
-    <!-- CONTENT WRAPPER -->
     <div class="report-container">
-      <!-- CHART -->
+      <!-- chart -->
       <div class="chart-card">
         <div class="chart-title">Ringkasan Bulanan</div>
         <div id="chart" class="chart-container"></div>
       </div>
 
-      <!-- REPORT SHEET -->
+      <!-- report sheet -->
       <div class="report-sheet">
         <div class="report-header">
           <p class="nama">"{{ hasil.NamaUsaha }}"</p>
@@ -82,7 +75,7 @@
           </p>
         </div>
 
-        <!-- TABLE -->
+        <!-- table -->
         <table class="report-table">
           <thead>
             <tr>
@@ -169,7 +162,7 @@
       </div>
     </div>
 
-    <!-- JAVASCRIPT -->
+    <!-- js -->
     <script>
       if (window.lucide && typeof lucide.createIcons === "function") {
         lucide.createIcons();
@@ -200,7 +193,6 @@
               color: ["#445D48", "#D6CC99", "#001524"],
               line: { color: "#FDE5D4", width: 2 },
             },
-            // Hanya tampilkan angka melalui tooltip (hover), bukan text di luar bar
             hovertemplate: "%{x} Rp %{y:,.0f}<extra></extra>",
             opacity: 0.95,
           },
@@ -215,11 +207,11 @@
               tickprefix: "Rp ",
               separatethousands: true,
               zeroline: true,
-              tickformat: ",.0f", // menghilangkan angka koma
-              rangemode: "tozero", // agar tidak muncul nilai minus
+              tickformat: ",.0f",
+              rangemode: "tozero",
               automargin: true,
             },
-            dragmode: false, // cegah drag/zoom tapi tetap bisa hover
+            dragmode: false,
             showlegend: false,
             hovermode: "x",
             plot_bgcolor: "#ffffff",

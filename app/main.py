@@ -21,22 +21,21 @@ STATIC_DIR = os.path.abspath(
 print("STATIC_DIR =", STATIC_DIR)
 
 app = FastAPI()
-
-# 1. PROXY HEADERS (AGAR URL_FOR MEMAKAI HTTPS DI BELAKANG PROXY/RAILWAY)
+# fungsi code ini untuk mengenali header proxy 
 app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 
-# 2. STATIC FILES — HARUS DIDAFTARKAN PALING AWAL
+# fungsi code ini untuk melayani file statis (CSS, JS, gambar, dsb.)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
-# 3. MIDDLEWARE
+# middleware session untuk menyimpan data antar request
 app.add_middleware(SessionMiddleware, secret_key="RAHASIA")
 
-# 4. TEMPLATES
+# templates Jinja2 yaitu untuk rendering HTML dinamis
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 app.state.templates = templates
 print("TEMPLATES_DIR =", TEMPLATES_DIR)
 
-#  5. ROUTERS
+#  routes
 app.include_router(landing.router)
 app.include_router(dashboard.router)
 app.include_router(upload.router)
@@ -44,6 +43,5 @@ app.include_router(process.router)
 app.include_router(laporan.router)
 app.include_router(pdf.router)
 
-# Cek apakah route static benar-benar terpasang
 for r in app.routes:
     print("ROUTE:", r)

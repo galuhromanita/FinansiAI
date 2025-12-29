@@ -25,27 +25,23 @@ def extract_metadata(df):
 
             text = cell.strip()
 
-            # =========================
-            # NAMA USAHA
-            # =========================
+            # kolom nama usaha
             if "nama usaha" in text.lower():
                 value = text.split(":", 1)[-1].strip()
                 # 🔥 HILANGKAN PETIK
                 nama_usaha = value.strip('"').strip("'")
 
-            # =========================
-            # CATATAN BULAN
-            # =========================
+            # kolom bulan
             if "catatan bulan" in text.lower():
                 value = text.split(":", 1)[-1].strip()
 
-                # 🔥 AMBIL BULAN VALID
+                # ambil bulan valid
                 bulan_match = re.search(
                     r"(januari|februari|maret|april|mei|juni|juli|agustus|september|oktober|november|desember)",
                     value.lower()
                 )
 
-                # 🔥 AMBIL TAHUN VALID
+                # ambil tahun valid
                 tahun_match = re.search(r"\b(19|20)\d{2}\b", value)
 
                 if bulan_match:
@@ -56,16 +52,15 @@ def extract_metadata(df):
 
     return nama_usaha, bulan, tahun
 
-def parse_excel(filepath):
 
+def parse_excel(filepath):
     df = pd.read_excel(filepath, header=None)
-    
     nama_usaha, bulan, tahun = extract_metadata(df)
 
-    # 1) BUANG SEMUA ROW KOSONG
+    # 1) buang semua row kosong
     df = df.dropna(how="all")
 
-    # 2) CARI ROW YANG MENGANDUNG HEADER SEBENARNYA
+    # 2) cari row yang mengandung header sebenarnya
     header_row_index = None
     for i, row in df.iterrows():
         row_str = "".join(str(x).lower() for x in row.tolist())
@@ -76,11 +71,11 @@ def parse_excel(filepath):
     if header_row_index is None:
         raise ValueError("Header transaksi tidak ditemukan dalam file Excel")
 
-    # 3) PAKE ROW TERSEBUT SEBAGAI HEADER
+    # 3) pake row tersebut sebagai header
     df.columns = df.iloc[header_row_index].tolist()
     df = df.iloc[header_row_index + 1 :]
 
-    # 4) CONVERT NAMA HEADER KE FORMAT BAKU
+    # 4) convert nama header ke format baku
     df.columns = [
         "Tanggal" if "tanggal" in str(c).lower() else
         "Jenis Transaksi" if "jenis transaksi" in str(c).lower() else
@@ -90,29 +85,25 @@ def parse_excel(filepath):
         for c in df.columns
     ]
 
-    # 5) HANYA AMBIL 4 KOLOM PENTING
+    # 5) hanya ambil 4 kolom penting
     keep_cols = ["Tanggal", "Jenis Transaksi", "Keterangan", "Jumlah"]
     df = df[[c for c in keep_cols if c in df.columns]]
 
-    # 5.5) CEK APAKAH ADA DATA TRANSAKSI SETELAH HEADER
-    # Anggap sel berisi hanya spasi sebagai kosong
+    # 5.5) cek apakah ada data transaksi setelah header
     df = df.replace(r"^\s*$", pd.NA, regex=True)
 
-    # Jika semua baris kosong (tidak ada transaksi), hentikan proses dengan error khusus
+    # jika semua baris kosong (tidak ada transaksi), tampilkan pop up error
     if df.dropna(how="all").empty:
         raise ValueError("NO_DATA_TRANSAKSI")
 
-    # 6) BERSIHKAN FORMAT UANG
+    # 6) bersihkan format uang
     if "Tanggal" in df.columns:
         df["Tanggal"] = df["Tanggal"].astype(str)
 
-    # 6.5) BERSIHKAN KOLOM JUMLAH
+    # 6.5) bersihkan kolom jumlah
     if "Jumlah" in df.columns:
         df["Jumlah"] = df["Jumlah"].apply(clean_money)
 
-
-    # 7) KONVERSI TANGGAL JIKA MAU
-    # df["Tanggal"] = pd.to_datetime(df["Tanggal"], errors="ignore")
 
     parsed = {
         "columns": df.columns.tolist(),

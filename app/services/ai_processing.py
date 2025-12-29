@@ -10,9 +10,7 @@ def analyze_data(parsed_excel: dict):
     beban_lain = 0
     warnings = []
 
-    # =========================
-    # BENTUK DATA TERSTRUKTUR
-    # =========================
+    # buat struktur data yang lebih mudah diproses
     structured_rows = []
     for row in raw:
         try:
@@ -25,19 +23,17 @@ def analyze_data(parsed_excel: dict):
         except Exception:
             warnings.append(f"Baris tidak valid: {row}")
 
-    # =========================
-    # HITUNG SESUAI 3 JENIS TRANSAKSI
-    # =========================
+    # hitung sesuai 3 jenis transaksi
     for r in structured_rows:
         jenis = r["Jenis Transaksi"]
         ket = r["Keterangan"]
         jumlah = r["Jumlah"]
 
-        # -------- MODAL --------
+        # -------- modal --------
         if jenis == "modal":
             modal += jumlah
 
-        # -------- UANG MASUK --------
+        # -------- uang masuk --------
         elif jenis == "uang masuk":
 
             # Jika seharusnya modal (pinjaman / setoran)
@@ -49,7 +45,7 @@ def analyze_data(parsed_excel: dict):
             else:
                 pendapatan += jumlah
 
-        # -------- UANG KELUAR --------
+        # -------- uang keluar --------
         elif jenis == "uang keluar":
 
             if any(x in ket for x in ["bahan", "alat", "gaji", "listrik", "air", "sewa"]):
@@ -57,7 +53,7 @@ def analyze_data(parsed_excel: dict):
             else:
                 beban_lain += jumlah
 
-        # -------- JENIS TIDAK VALID --------
+        # -------- jenis tidak valid --------
         else:
             warnings.append(
                 f"Jenis transaksi tidak dikenali: '{jenis}'"
@@ -66,9 +62,7 @@ def analyze_data(parsed_excel: dict):
     total_beban = beban_usaha + beban_lain
     laba_bersih = pendapatan - total_beban
 
-    # =========================
-    # HASIL FINAL (MURNI PERHITUNGAN MANUAL)
-    # =========================
+    
     hasil_final = {
         "NamaUsaha": meta.get("NamaUsaha", "Tidak Diketahui"),
         "Bulan": meta.get("Bulan", ""),
@@ -80,8 +74,6 @@ def analyze_data(parsed_excel: dict):
         "TotalBeban": total_beban,
         "LabaBersih": laba_bersih,
         "Warnings": warnings,
-        # Tidak menggunakan Gemini API; insight dihasilkan manual dari angka
-        "InsightAI": "Angka laporan ini dihitung otomatis dari data transaksi yang Anda unggah tanpa bantuan model AI eksternal.",
     }
 
     return hasil_final

@@ -5,17 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FinansiAI</title>
 
-    <!-- Favicon -->
+    <!-- favicon -->
     <link
       rel="icon"
       type="image/png"
       href="{{ url_for('static', path='img/logo.png') }}"
     />
 
-    <!-- Tailwind (built CSS) -->
     <link rel="stylesheet" href="{{ url_for('static', path='css/tw.css') }}" />
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -23,7 +21,6 @@
       rel="stylesheet"
     />
 
-    <!-- Main CSS (custom overrides) -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', path='css/style.css') }}"
@@ -31,14 +28,12 @@
   </head>
 
   <body class="bg-white min-h-screen overflow-hidden font-[Inter]">
-    <!-- WRAPPER -->
     <div
       class="relative isolate min-h-screen px-6 lg:px-8 grid place-items-center"
     >
-      <!-- BACKGROUND -->
       <div aria-hidden="true" class="bg-shape-landing"></div>
 
-      <!-- MAIN CONTENT -->
+      <!-- main content -->
       <div class="mx-auto max-w-2xl w-full text-center">
         <h1 class="landing-title">
           Selamat Datang di <span class="text-[#445D48]">Finansi</span
@@ -50,7 +45,7 @@
           keuangan secara otomatis.
         </p>
 
-        <!-- GET STARTED BUTTON -->
+        <!-- button -->
         <div class="mt-10 flex justify-center">
           <a id="getStartedBtn" href="/dashboard" class="btn-primary">
             Get Started
@@ -59,7 +54,7 @@
       </div>
     </div>
 
-    <!-- TUTORIAL MODAL -->
+    <!-- pop up tutorial -->
     <div id="tutorialModal" class="modal hidden">
       <div id="tutorialOverlay" class="modal-overlay"></div>
 
@@ -104,7 +99,7 @@
       </div>
     </div>
 
-    <!-- SCRIPTS -->
+    <!-- js -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script>
       if (window.lucide && typeof lucide.createIcons === "function") {
@@ -113,7 +108,6 @@
     </script>
 
     <script>
-      // Landing page: setiap klik "Get Started" tampilkan tutorial, lalu ke dashboard
       document.addEventListener("DOMContentLoaded", function () {
         const getStarted = document.getElementById("getStartedBtn");
         const modal = document.getElementById("tutorialModal");
